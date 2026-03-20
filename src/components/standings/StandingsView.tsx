@@ -83,15 +83,27 @@ function renderWildcard(standings: TeamStanding[]) {
     const inWildcard = wildcardPool.slice(0, 2)
     const outWildcard = wildcardPool.slice(2)
 
+    const isEastern = conf === 'Eastern'
+    const bannerClass = isEastern
+      ? 'bg-blue-600 dark:bg-blue-700'
+      : 'bg-orange-500 dark:bg-orange-600'
+
     return (
-      <div key={conf}>
+      <div key={conf} className="mb-6">
+        {/* Conference banner */}
+        <div className={`${bannerClass} px-3 py-2 flex items-center gap-2`}>
+          <span className="text-sm font-bold text-white uppercase tracking-wider">
+            {conf} Conference
+          </span>
+        </div>
+
         {divOrder.map(div => {
           const leaders = (divisionMap[div] ?? [])
             .filter(t => t.divisionSequence <= 3)
             .sort((a, b) => a.divisionSequence - b.divisionSequence)
           return <StandingsTable key={div} title={`${div} Division`} standings={leaders} />
         })}
-        <StandingsTable title={`${conf} Wild Card`} standings={inWildcard} />
+        <StandingsTable title="Wild Card" standings={inWildcard} />
         {outWildcard.length > 0 && (
           <StandingsTable title="Out of Playoff Position" standings={outWildcard} />
         )}
