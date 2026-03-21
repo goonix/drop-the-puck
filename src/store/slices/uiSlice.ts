@@ -11,6 +11,7 @@ interface UIState {
   favoriteTeamAbbrevs: string[]
   selectedDate: string
   standingsGrouping: StandingsGrouping
+  hornMuted: boolean
 }
 
 function getInitialTheme(): Theme {
@@ -29,12 +30,21 @@ function getInitialFavorites(): string[] {
   return []
 }
 
+function getInitialHornMuted(): boolean {
+  if (typeof localStorage !== 'undefined') {
+    const saved = localStorage.getItem('hornMuted')
+    if (saved !== null) return saved === 'true'
+  }
+  return true // muted by default
+}
+
 const initialState: UIState = {
   activeView: 'schedule',
   theme: getInitialTheme(),
   favoriteTeamAbbrevs: getInitialFavorites(),
   selectedDate: todayString(),
   standingsGrouping: 'conference',
+  hornMuted: getInitialHornMuted(),
 }
 
 const uiSlice = createSlice({
@@ -72,6 +82,10 @@ const uiSlice = createSlice({
       state.favoriteTeamAbbrevs = action.payload
       localStorage.setItem('favoriteTeams', JSON.stringify(state.favoriteTeamAbbrevs))
     },
+    toggleHornMuted(state) {
+      state.hornMuted = !state.hornMuted
+      localStorage.setItem('hornMuted', String(state.hornMuted))
+    },
   },
 })
 
@@ -83,5 +97,6 @@ export const {
   setStandingsGrouping,
   toggleFavoriteTeam,
   setFavoriteTeams,
+  toggleHornMuted,
 } = uiSlice.actions
 export default uiSlice.reducer

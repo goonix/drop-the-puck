@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { playGoalHorn } from '../../utils/goalHorn'
 import type { NormalizedGame } from '../../types/schedule'
 import TeamLogo from '../common/TeamLogo'
 import GameStatusBadge from './GameStatusBadge'
@@ -16,6 +17,7 @@ interface Props {
 export default function GameCard({ game }: Props) {
   const dispatch = useAppDispatch()
   const selectedGameId = useAppSelector(s => s.schedule.selectedGameId)
+  const hornMuted = useAppSelector(s => s.ui.hornMuted)
   const { isFavorite } = useFavoriteTeams()
 
   const isSelected = selectedGameId === game.id
@@ -64,6 +66,7 @@ export default function GameCard({ game }: Props) {
           isWinner={final && game.awayScore > game.homeScore}
           showScore={live || final}
           isFav={awayFav}
+          hornMuted={hornMuted}
         />
         <TeamScoreRow
           abbrev={game.homeTeamAbbrev}
@@ -73,6 +76,7 @@ export default function GameCard({ game }: Props) {
           isWinner={final && game.homeScore > game.awayScore}
           showScore={live || final}
           isFav={homeFav}
+          hornMuted={hornMuted}
         />
       </div>
       {!live && !final && game.tvBroadcasts.length > 0 && (
@@ -99,9 +103,10 @@ interface TeamScoreRowProps {
   isWinner: boolean
   showScore: boolean
   isFav: boolean
+  hornMuted: boolean
 }
 
-function TeamScoreRow({ abbrev, score, isWinner, showScore, isFav }: TeamScoreRowProps) {
+function TeamScoreRow({ abbrev, score, isWinner, showScore, isFav, hornMuted }: TeamScoreRowProps) {
   const prevScore = useRef(score)
   const [flashing, setFlashing] = useState(false)
 
@@ -113,10 +118,11 @@ function TeamScoreRow({ abbrev, score, isWinner, showScore, isFav }: TeamScoreRo
       })
       const t = setTimeout(() => setFlashing(false), 1400)
       prevScore.current = score
+      if (!hornMuted) playGoalHorn(abbrev)
       return () => clearTimeout(t)
     }
     prevScore.current = score
-  }, [score])
+  }, [score, abbrev, hornMuted])
 
   return (
     <div className="flex items-center gap-2">
