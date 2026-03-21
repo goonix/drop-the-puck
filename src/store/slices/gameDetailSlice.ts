@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk, type PayloadAction } from '@reduxjs/toolkit'
 import { fetchBoxScore, fetchPlayByPlay } from '../../api/gameApi'
-import type { BoxScore, ScoringPlay, Play, PlayerInfo } from '../../types/gameDetail'
+import type { BoxScore, ScoringPlay, Play, PlayerInfo, SkaterStat, GoalieStat, TeamPlayerStats, PlayerGameStats } from '../../types/gameDetail'
 
 type LoadingStatus = 'idle' | 'loading' | 'succeeded' | 'failed'
 
@@ -10,6 +10,7 @@ interface GameDetailState {
   plays: Play[]
   scoringPlays: ScoringPlay[]
   players: Record<number, PlayerInfo>
+  playerStats: PlayerGameStats | null
   boxScoreStatus: LoadingStatus
   playsStatus: LoadingStatus
   boxScoreError: string | null
@@ -22,10 +23,48 @@ const initialState: GameDetailState = {
   plays: [],
   scoringPlays: [],
   players: {},
+  playerStats: null,
   boxScoreStatus: 'idle',
   playsStatus: 'idle',
   boxScoreError: null,
   playsError: null,
+}
+
+function parseTeamStats(raw: any): TeamPlayerStats {
+  if (!raw) return { forwards: [], defense: [], goalies: [] }
+  const parseSkater = (p: any): SkaterStat => ({
+    playerId: p.playerId,
+    sweaterNumber: p.sweaterNumber,
+    name: p.name?.default ?? '',
+    position: p.position,
+    goals: p.goals ?? 0,
+    assists: p.assists ?? 0,
+    points: p.points ?? 0,
+    plusMinus: p.plusMinus ?? 0,
+    pim: p.pim ?? 0,
+    hits: p.hits ?? 0,
+    sog: p.sog ?? 0,
+    blockedShots: p.blockedShots ?? 0,
+    toi: p.toi ?? '0:00',
+    faceoffWinningPctg: p.faceoffWinningPctg ?? 0,
+    giveaways: p.giveaways ?? 0,
+    takeaways: p.takeaways ?? 0,
+  })
+  return {
+    forwards: (raw.forwards ?? []).map(parseSkater),
+    defense: (raw.defense ?? []).map(parseSkater),
+    goalies: (raw.goalies ?? []).map((p: any): GoalieStat => ({
+      playerId: p.playerId,
+      sweaterNumber: p.sweaterNumber,
+      name: p.name?.default ?? '',
+      position: p.position,
+      shotsAgainst: p.shotsAgainst ?? 0,
+      saves: p.saves ?? 0,
+      goalsAgainst: p.goalsAgainst ?? 0,
+      toi: p.toi ?? '0:00',
+      starter: p.starter ?? false,
+    })),
+  }
 }
 
 export const loadBoxScore = createAsyncThunk('gameDetail/loadBoxScore', async (gameId: number) => {
@@ -55,7 +94,12 @@ export const loadBoxScore = createAsyncThunk('gameDetail/loadBoxScore', async (g
     teamStats: data.teamGameStats ?? [],
     gameOutcome: data.gameOutcome?.lastPeriodType ?? null,
   }
-  return boxScore
+  const rawPgs = (data as any).playerByGameStats ?? {}
+  const playerStats: PlayerGameStats = {
+    awayTeam: parseTeamStats(rawPgs.awayTeam),
+    homeTeam: parseTeamStats(rawPgs.homeTeam),
+  }
+  return { boxScore, playerStats }
 })
 
 export const loadPlayByPlay = createAsyncThunk('gameDetail/loadPlayByPlay', async (gameId: number) => {
@@ -114,6 +158,7 @@ export const loadPlayByPlay = createAsyncThunk('gameDetail/loadPlayByPlay', asyn
         timeInPeriod: p.timeInPeriod,
         scorerName: scorer?.name ?? 'Unknown',
         scorerTotal: d.scoringPlayerTotal ?? 0,
+        scorerHeadshot: scorer?.headshot ?? null,
         assist1Name: assist1?.name ?? null,
         assist1Total: d.assist1PlayerTotal ?? null,
         assist2Name: assist2?.name ?? null,
@@ -167,6 +212,7 @@ const gameDetailSlice = createSlice({
         state.plays = []
         state.scoringPlays = []
         state.players = {}
+        state.playerStats = null
         state.boxScoreStatus = 'idle'
         state.playsStatus = 'idle'
         state.boxScoreError = null
@@ -182,7 +228,8 @@ const gameDetailSlice = createSlice({
       })
       .addCase(loadBoxScore.fulfilled, (state, action) => {
         state.boxScoreStatus = 'succeeded'
-        state.boxScore = action.payload
+        state.boxScore = action.payload.boxScore
+        state.playerStats = action.payload.playerStats
       })
       .addCase(loadBoxScore.rejected, (state, action) => {
         state.boxScoreStatus = 'failed'

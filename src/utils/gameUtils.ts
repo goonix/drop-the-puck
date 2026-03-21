@@ -53,6 +53,11 @@ export function normalizeGame(raw: NHLScoreGame): NormalizedGame {
     homeSog: raw.homeTeam.sog ?? 0,
     venue: raw.venue?.default ?? '',
     gameOutcome: raw.gameOutcome?.lastPeriodType ?? null,
+    tvBroadcasts: (raw.tvBroadcasts ?? []).map(b => ({
+      network: b.network,
+      market: b.market,
+      countryCode: b.countryCode,
+    })),
     goals: (raw.goals ?? []).map(g => ({
       period: g.period,
       periodType: g.periodDescriptor?.periodType ?? 'REG',

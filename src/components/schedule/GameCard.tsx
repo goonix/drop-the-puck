@@ -74,6 +74,18 @@ export default function GameCard({ game }: Props) {
           isFav={homeFav}
         />
       </div>
+      {!live && !final && game.tvBroadcasts.length > 0 && (
+        <div className="mt-2 flex flex-wrap gap-1">
+          {game.tvBroadcasts
+            .filter(b => b.market === 'N')
+            .slice(0, 3)
+            .map(b => (
+              <span key={b.network} className="text-xs px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded">
+                {b.network}
+              </span>
+            ))}
+        </div>
+      )}
     </button>
   )
 }

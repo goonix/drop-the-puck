@@ -1,11 +1,12 @@
 import { useAppDispatch, useAppSelector } from '../../store/hooks'
 import { setActiveView } from '../../store/slices/uiSlice'
 
-type View = 'schedule' | 'standings'
+type View = 'schedule' | 'standings' | 'bracket'
 
 const TABS: { id: View; label: string }[] = [
   { id: 'schedule', label: 'Schedule' },
   { id: 'standings', label: 'Standings' },
+  { id: 'bracket', label: 'Bracket' },
 ]
 
 export default function NavBar() {

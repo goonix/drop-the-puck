@@ -1,6 +1,7 @@
 import type { BoxScore } from '../../types/gameDetail'
 import TeamLogo from '../common/TeamLogo'
 import { getGameStatus } from '../../utils/gameUtils'
+import { getTeamColor } from '../../utils/teamUtils'
 import type { NormalizedGame } from '../../types/schedule'
 
 interface Props {
@@ -30,33 +31,38 @@ function toGameLike(b: BoxScore): NormalizedGame {
     venue: '',
     gameOutcome: b.gameOutcome,
     goals: [],
+    tvBroadcasts: [],
   }
 }
 
 export default function GameHeader({ boxScore }: Props) {
   const status = getGameStatus(toGameLike(boxScore))
+  const homeColor = getTeamColor(boxScore.homeTeamAbbrev)
 
   return (
-    <div className="px-4 py-4 border-b border-gray-200 dark:border-gray-700/50">
-      {/* Status */}
-      <div className="text-center text-sm text-gray-500 dark:text-gray-400 mb-3">{status}</div>
+    <div className="border-b border-gray-200 dark:border-gray-700/50">
+      <div className="h-1" style={{ backgroundColor: homeColor }} />
+      <div className="px-4 py-4">
+        {/* Status */}
+        <div className="text-center text-sm text-gray-500 dark:text-gray-400 mb-3">{status}</div>
 
-      {/* Score */}
-      <div className="flex items-center justify-between gap-2">
-        <TeamBlock
-          abbrev={boxScore.awayTeamAbbrev}
-          name={boxScore.awayTeamName}
-          score={boxScore.awayScore}
-          sog={boxScore.awaySog}
-        />
-        <span className="text-2xl font-bold text-gray-300 dark:text-gray-500">–</span>
-        <TeamBlock
-          abbrev={boxScore.homeTeamAbbrev}
-          name={boxScore.homeTeamName}
-          score={boxScore.homeScore}
-          sog={boxScore.homeSog}
-          home
-        />
+        {/* Score */}
+        <div className="flex items-center justify-between gap-2">
+          <TeamBlock
+            abbrev={boxScore.awayTeamAbbrev}
+            name={boxScore.awayTeamName}
+            score={boxScore.awayScore}
+            sog={boxScore.awaySog}
+          />
+          <span className="text-2xl font-bold text-gray-300 dark:text-gray-500">–</span>
+          <TeamBlock
+            abbrev={boxScore.homeTeamAbbrev}
+            name={boxScore.homeTeamName}
+            score={boxScore.homeScore}
+            sog={boxScore.homeSog}
+            home
+          />
+        </div>
       </div>
     </div>
   )

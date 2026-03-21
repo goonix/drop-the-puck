@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit'
 import { todayString } from '../../utils/dateUtils'
 
-type ActiveView = 'schedule' | 'standings' | 'gameDetail'
+type ActiveView = 'schedule' | 'standings' | 'gameDetail' | 'bracket'
 type Theme = 'dark' | 'light'
 type StandingsGrouping = 'conference' | 'division' | 'wildcard'
 

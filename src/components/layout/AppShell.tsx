@@ -8,6 +8,7 @@ import MobileNav from './MobileNav'
 import ScheduleView from '../schedule/ScheduleView'
 import StandingsView from '../standings/StandingsView'
 import GameDetailView from '../gameDetail/GameDetailView'
+import BracketView from '../bracket/BracketView'
 
 export default function AppShell() {
   const dispatch = useAppDispatch()
@@ -47,7 +48,7 @@ export default function AppShell() {
           className={`flex flex-col w-full md:w-80 lg:w-96 border-r border-gray-200 dark:border-gray-700/50 overflow-hidden
             ${activeView === 'gameDetail' ? 'hidden md:flex' : 'flex'}`}
         >
-          {activeView === 'standings' ? <StandingsView /> : <ScheduleView />}
+          {activeView === 'standings' ? <StandingsView /> : activeView === 'bracket' ? <BracketView /> : <ScheduleView />}
         </div>
 
         {/* Right panel: game detail (desktop always, mobile when selected) */}

@@ -10,6 +10,7 @@ export function useGameDetail(gameId: number | null) {
   const plays = useAppSelector(s => s.gameDetail.plays)
   const scoringPlays = useAppSelector(s => s.gameDetail.scoringPlays)
   const players = useAppSelector(s => s.gameDetail.players)
+  const playerStats = useAppSelector(s => s.gameDetail.playerStats)
   const boxScoreStatus = useAppSelector(s => s.gameDetail.boxScoreStatus)
   const playsStatus = useAppSelector(s => s.gameDetail.playsStatus)
 
@@ -39,5 +40,5 @@ export function useGameDetail(gameId: number | null) {
 
   usePolling(refresh, 30000, liveGame && gameId !== null)
 
-  return { boxScore, plays, scoringPlays, players, boxScoreStatus, playsStatus }
+  return { boxScore, plays, scoringPlays, players, playerStats, boxScoreStatus, playsStatus }
 }

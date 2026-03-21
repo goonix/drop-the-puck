@@ -21,6 +21,7 @@ export interface NormalizedGame {
   venue: string
   gameOutcome: string | null
   goals: NormalizedGoal[]
+  tvBroadcasts: { network: string; market: string; countryCode: string }[]
 }
 
 export interface NormalizedGoal {

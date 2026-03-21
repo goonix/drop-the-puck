@@ -3,6 +3,7 @@ import uiReducer from './slices/uiSlice'
 import scheduleReducer from './slices/scheduleSlice'
 import standingsReducer from './slices/standingsSlice'
 import gameDetailReducer from './slices/gameDetailSlice'
+import bracketReducer from './slices/bracketSlice'
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +11,7 @@ export const store = configureStore({
     schedule: scheduleReducer,
     standings: standingsReducer,
     gameDetail: gameDetailReducer,
+    bracket: bracketReducer,
   },
 })
 

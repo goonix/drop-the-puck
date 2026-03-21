@@ -5,10 +5,11 @@ import GameHeader from './GameHeader'
 import BoxScore from './BoxScore'
 import ScoringPlays from './ScoringPlays'
 import PlayByPlay from './PlayByPlay'
+import PlayerStats from './PlayerStats'
 import LoadingSpinner from '../common/LoadingSpinner'
 import ErrorMessage from '../common/ErrorMessage'
 
-type Tab = 'scoring' | 'boxscore' | 'plays'
+type Tab = 'scoring' | 'boxscore' | 'plays' | 'stats'
 
 interface Props {
   onClose?: () => void
@@ -17,7 +18,7 @@ interface Props {
 export default function GameDetailView({ onClose }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('scoring')
   const gameId = useAppSelector(s => s.schedule.selectedGameId)
-  const { boxScore, plays, scoringPlays, players, boxScoreStatus, playsStatus } = useGameDetail(gameId)
+  const { boxScore, plays, scoringPlays, players, playerStats, boxScoreStatus, playsStatus } = useGameDetail(gameId)
 
   if (!gameId) {
     return (
@@ -56,7 +57,7 @@ export default function GameDetailView({ onClose }: Props) {
 
           {/* Tabs */}
           <div className="flex border-b border-gray-200 dark:border-gray-700/50">
-            {([['scoring', 'Goals'], ['boxscore', 'Box Score'], ['plays', 'Plays']] as const).map(
+            {([['scoring', 'Goals'], ['boxscore', 'Box Score'], ['plays', 'Plays'], ['stats', 'Stats']] as const).map(
               ([tab, label]) => (
                 <button
                   key={tab}
@@ -87,6 +88,11 @@ export default function GameDetailView({ onClose }: Props) {
               playsStatus === 'loading' && plays.length === 0
                 ? <LoadingSpinner />
                 : <PlayByPlay plays={plays} players={players} />
+            )}
+            {activeTab === 'stats' && (
+              playerStats
+                ? <PlayerStats playerStats={playerStats} awayAbbrev={boxScore.awayTeamAbbrev} homeAbbrev={boxScore.homeTeamAbbrev} />
+                : <div className="py-8 text-center text-gray-500 text-sm">No stats available</div>
             )}
           </div>
         </>

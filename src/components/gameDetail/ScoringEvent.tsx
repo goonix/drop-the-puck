@@ -32,6 +32,16 @@ export default function ScoringEvent({ play, awayAbbrev }: Props) {
       {/* Team logo */}
       <TeamLogo abbrev={play.teamAbbrev} size={20} dark />
 
+      {/* Scorer headshot */}
+      {play.scorerHeadshot && (
+        <img
+          src={play.scorerHeadshot}
+          alt={play.scorerName}
+          className="w-7 h-7 rounded-full object-cover shrink-0 bg-gray-200 dark:bg-gray-700"
+          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+        />
+      )}
+
       {/* Details */}
       <div className="flex-1 min-w-0">
         <p className="text-sm text-gray-900 dark:text-white font-medium truncate">

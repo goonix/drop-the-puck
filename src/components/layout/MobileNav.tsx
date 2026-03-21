@@ -17,10 +17,16 @@ export default function MobileNav() {
         }}
       />
       <NavItem
-        icon="🏆"
+        icon="📊"
         label="Standings"
         active={activeView === 'standings'}
         onClick={() => dispatch(setActiveView('standings'))}
+      />
+      <NavItem
+        icon="🏆"
+        label="Bracket"
+        active={activeView === 'bracket'}
+        onClick={() => dispatch(setActiveView('bracket'))}
       />
     </nav>
   )
