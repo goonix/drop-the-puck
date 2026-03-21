@@ -49,11 +49,19 @@ function renderGrouped(standings: TeamStanding[], grouping: 'conference' | 'divi
         ? a.conferenceSequence - b.conferenceSequence
         : a.divisionSequence - b.divisionSequence,
     )
+    const confHeaderClass =
+      grouping === 'conference'
+        ? key === 'Eastern'
+          ? 'text-sm font-bold text-white uppercase tracking-wider px-3 py-2 bg-blue-600 dark:bg-blue-700'
+          : 'text-sm font-bold text-white uppercase tracking-wider px-3 py-2 bg-orange-500 dark:bg-orange-600'
+        : undefined
+
     return (
       <StandingsTable
         key={key}
         title={`${key} ${grouping === 'conference' ? 'Conference' : 'Division'}`}
         standings={sorted}
+        headerClassName={confHeaderClass}
       />
     )
   })

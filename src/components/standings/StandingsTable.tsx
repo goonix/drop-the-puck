@@ -4,12 +4,13 @@ import TeamRow from './TeamRow'
 interface Props {
   title: string
   standings: TeamStanding[]
+  headerClassName?: string
 }
 
-export default function StandingsTable({ title, standings }: Props) {
+export default function StandingsTable({ title, standings, headerClassName }: Props) {
   return (
     <div className="mb-4">
-      <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 py-2 bg-gray-100 dark:bg-gray-800/60">
+      <h3 className={headerClassName ?? 'text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 py-2 bg-gray-100 dark:bg-gray-800/60'}>
         {title}
       </h3>
       <table className="w-full">
