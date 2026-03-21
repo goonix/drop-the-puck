@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import type { NormalizedGame } from '../../types/schedule'
 import TeamLogo from '../common/TeamLogo'
 import GameStatusBadge from './GameStatusBadge'
@@ -101,6 +102,22 @@ interface TeamScoreRowProps {
 }
 
 function TeamScoreRow({ abbrev, score, isWinner, showScore, isFav }: TeamScoreRowProps) {
+  const prevScore = useRef(score)
+  const [flashing, setFlashing] = useState(false)
+
+  useEffect(() => {
+    if (score > prevScore.current) {
+      setFlashing(false)
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => setFlashing(true))
+      })
+      const t = setTimeout(() => setFlashing(false), 1400)
+      prevScore.current = score
+      return () => clearTimeout(t)
+    }
+    prevScore.current = score
+  }, [score])
+
   return (
     <div className="flex items-center gap-2">
       <TeamLogo abbrev={abbrev} size={28} dark />
@@ -109,7 +126,7 @@ function TeamScoreRow({ abbrev, score, isWinner, showScore, isFav }: TeamScoreRo
         {isFav && <span className="ml-1 text-yellow-500 dark:text-yellow-400">★</span>}
       </span>
       {showScore && (
-        <span className={`text-lg font-bold tabular-nums ${isWinner ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
+        <span className={`text-lg font-bold tabular-nums ${isWinner ? 'text-gray-900 dark:text-white' : 'text-gray-400'} ${flashing ? 'score-flash' : ''}`}>
           {score}
         </span>
       )}

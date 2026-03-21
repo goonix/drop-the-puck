@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react'
 import type { BoxScore } from '../../types/gameDetail'
 import TeamLogo from '../common/TeamLogo'
 import { getGameStatus } from '../../utils/gameUtils'
@@ -80,11 +81,29 @@ function TeamBlock({
   sog: number
   home?: boolean
 }) {
+  const prevScore = useRef(score)
+  const [flashing, setFlashing] = useState(false)
+
+  useEffect(() => {
+    if (score > prevScore.current) {
+      setFlashing(false)
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => setFlashing(true))
+      })
+      const t = setTimeout(() => setFlashing(false), 1400)
+      prevScore.current = score
+      return () => clearTimeout(t)
+    }
+    prevScore.current = score
+  }, [score])
+
   return (
     <div className={`flex flex-col items-center gap-1 flex-1 ${home ? 'items-end' : 'items-start'}`}>
       <TeamLogo abbrev={abbrev} size={48} dark />
       <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">{abbrev}</span>
-      <span className="text-4xl font-bold text-gray-900 dark:text-white tabular-nums">{score}</span>
+      <span className={`text-4xl font-bold text-gray-900 dark:text-white tabular-nums ${flashing ? 'score-flash' : ''}`}>
+        {score}
+      </span>
       <span className="text-xs text-gray-400 dark:text-gray-500">{sog} SOG</span>
     </div>
   )
