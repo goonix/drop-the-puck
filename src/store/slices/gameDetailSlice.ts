@@ -116,17 +116,30 @@ export const loadPlayByPlay = createAsyncThunk('gameDetail/loadPlayByPlay', asyn
     }
   }
 
-  const plays: Play[] = (data.plays ?? []).map(p => ({
-    eventId: p.eventId,
-    period: p.periodDescriptor.number,
-    periodType: p.periodDescriptor.periodType,
-    timeInPeriod: p.timeInPeriod,
-    timeRemaining: p.timeRemaining,
-    typeCode: p.typeCode,
-    typeDescKey: p.typeDescKey,
-    sortOrder: p.sortOrder,
-    details: (p.details ?? {}) as Record<string, unknown>,
-  }))
+  const awayId = data.awayTeam.id
+  const homeId = data.homeTeam.id
+
+  const plays: Play[] = (data.plays ?? []).map(p => {
+    const d = (p.details ?? {}) as Record<string, unknown>
+    const ownerTeamId = d.eventOwnerTeamId as number | undefined
+    const teamAbbrev = ownerTeamId === awayId
+      ? data.awayTeam.abbrev
+      : ownerTeamId === homeId
+        ? data.homeTeam.abbrev
+        : undefined
+    return {
+      eventId: p.eventId,
+      period: p.periodDescriptor.number,
+      periodType: p.periodDescriptor.periodType,
+      timeInPeriod: p.timeInPeriod,
+      timeRemaining: p.timeRemaining,
+      typeCode: p.typeCode,
+      typeDescKey: p.typeDescKey,
+      sortOrder: p.sortOrder,
+      details: d,
+      teamAbbrev,
+    }
+  })
 
   const scoringPlays: ScoringPlay[] = plays
     .filter(p => p.typeCode === 505)
@@ -148,7 +161,6 @@ export const loadPlayByPlay = createAsyncThunk('gameDetail/loadPlayByPlay', asyn
       const assist2 = d.assist2PlayerId ? players[d.assist2PlayerId] : null
 
       // Determine team abbrev from owner team id
-      const awayId = data.awayTeam.id
       const teamAbbrev = d.eventOwnerTeamId === awayId ? data.awayTeam.abbrev : data.homeTeam.abbrev
 
       return {

@@ -1,4 +1,5 @@
 import type { Play, PlayerInfo } from '../../types/gameDetail'
+import TeamLogo from '../common/TeamLogo'
 
 interface Props {
   plays: Play[]
@@ -57,7 +58,10 @@ function PlayRow({ play, players }: { play: Play; players: Record<number, Player
       <span className={`w-24 font-medium ${play.typeCode === 505 ? 'text-yellow-600 dark:text-yellow-400' : 'text-gray-500 dark:text-gray-400'}`}>
         {label}
       </span>
-      <span className="text-gray-500 dark:text-gray-400 truncate">{player?.name ?? ''}</span>
+      <div className="flex items-center gap-1.5 truncate">
+        {play.teamAbbrev && <TeamLogo abbrev={play.teamAbbrev} size={16} dark />}
+        <span className="text-gray-500 dark:text-gray-400 truncate">{player?.name ?? ''}</span>
+      </div>
     </div>
   )
 }

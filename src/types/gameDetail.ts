@@ -58,6 +58,7 @@ export interface Play {
   typeDescKey: string
   sortOrder: number
   details: Record<string, unknown>
+  teamAbbrev?: string
 }
 
 export interface PlayerInfo {
