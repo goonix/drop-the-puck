@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { playGoalHorn } from '../../utils/goalHorn'
 import type { NormalizedGame } from '../../types/schedule'
 import TeamLogo from '../common/TeamLogo'
@@ -108,20 +108,21 @@ interface TeamScoreRowProps {
 
 function TeamScoreRow({ abbrev, score, isWinner, showScore, isFav, hornMuted }: TeamScoreRowProps) {
   const prevScore = useRef(score)
-  const [flashing, setFlashing] = useState(false)
+  const scoreRef = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
     if (score > prevScore.current) {
-      setFlashing(false)
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => setFlashing(true))
-      })
-      const t = setTimeout(() => setFlashing(false), 1400)
       prevScore.current = score
       if (!hornMuted) playGoalHorn(abbrev)
-      return () => clearTimeout(t)
+      const el = scoreRef.current
+      if (el) {
+        el.classList.remove('score-flash')
+        void el.offsetWidth // trigger reflow to restart animation
+        el.classList.add('score-flash')
+      }
+    } else {
+      prevScore.current = score
     }
-    prevScore.current = score
   }, [score, abbrev, hornMuted])
 
   return (
@@ -132,7 +133,7 @@ function TeamScoreRow({ abbrev, score, isWinner, showScore, isFav, hornMuted }: 
         {isFav && <span className="ml-1 text-yellow-500 dark:text-yellow-400">★</span>}
       </span>
       {showScore && (
-        <span className={`text-lg font-bold tabular-nums ${isWinner ? 'text-gray-900 dark:text-white' : 'text-gray-400'} ${flashing ? 'score-flash' : ''}`}>
+        <span ref={scoreRef} className={`text-lg font-bold tabular-nums ${isWinner ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
           {score}
         </span>
       )}

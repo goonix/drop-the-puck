@@ -26,7 +26,7 @@ function getInitialFavorites(): string[] {
   try {
     const saved = localStorage.getItem('favoriteTeams')
     if (saved) return JSON.parse(saved) as string[]
-  } catch {}
+  } catch { /* ignore parse errors */ }
   return []
 }
 

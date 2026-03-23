@@ -30,40 +30,43 @@ const initialState: GameDetailState = {
   playsError: null,
 }
 
-function parseTeamStats(raw: any): TeamPlayerStats {
+function parseTeamStats(raw: Record<string, unknown>): TeamPlayerStats {
   if (!raw) return { forwards: [], defense: [], goalies: [] }
-  const parseSkater = (p: any): SkaterStat => ({
-    playerId: p.playerId,
-    sweaterNumber: p.sweaterNumber,
-    name: p.name?.default ?? '',
-    position: p.position,
-    goals: p.goals ?? 0,
-    assists: p.assists ?? 0,
-    points: p.points ?? 0,
-    plusMinus: p.plusMinus ?? 0,
-    pim: p.pim ?? 0,
-    hits: p.hits ?? 0,
-    sog: p.sog ?? 0,
-    blockedShots: p.blockedShots ?? 0,
-    toi: p.toi ?? '0:00',
-    faceoffWinningPctg: p.faceoffWinningPctg ?? 0,
-    giveaways: p.giveaways ?? 0,
-    takeaways: p.takeaways ?? 0,
+  const parseSkater = (p: Record<string, unknown>): SkaterStat => ({
+    playerId: p.playerId as number,
+    sweaterNumber: p.sweaterNumber as number,
+    name: (p.name as { default?: string })?.default ?? '',
+    position: p.position as string,
+    goals: (p.goals as number) ?? 0,
+    assists: (p.assists as number) ?? 0,
+    points: (p.points as number) ?? 0,
+    plusMinus: (p.plusMinus as number) ?? 0,
+    pim: (p.pim as number) ?? 0,
+    hits: (p.hits as number) ?? 0,
+    sog: (p.sog as number) ?? 0,
+    blockedShots: (p.blockedShots as number) ?? 0,
+    toi: (p.toi as string) ?? '0:00',
+    faceoffWinningPctg: (p.faceoffWinningPctg as number) ?? 0,
+    giveaways: (p.giveaways as number) ?? 0,
+    takeaways: (p.takeaways as number) ?? 0,
   })
   return {
-    forwards: (raw.forwards ?? []).map(parseSkater),
-    defense: (raw.defense ?? []).map(parseSkater),
-    goalies: (raw.goalies ?? []).map((p: any): GoalieStat => ({
-      playerId: p.playerId,
-      sweaterNumber: p.sweaterNumber,
-      name: p.name?.default ?? '',
-      position: p.position,
-      shotsAgainst: p.shotsAgainst ?? 0,
-      saves: p.saves ?? 0,
-      goalsAgainst: p.goalsAgainst ?? 0,
-      toi: p.toi ?? '0:00',
-      starter: p.starter ?? false,
-    })),
+    forwards: ((raw.forwards as unknown[]) ?? []).map(p => parseSkater(p as Record<string, unknown>)),
+    defense: ((raw.defense as unknown[]) ?? []).map(p => parseSkater(p as Record<string, unknown>)),
+    goalies: ((raw.goalies as unknown[]) ?? []).map((p): GoalieStat => {
+      const g = p as Record<string, unknown>
+      return {
+        playerId: g.playerId as number,
+        sweaterNumber: g.sweaterNumber as number,
+        name: (g.name as { default?: string })?.default ?? '',
+        position: g.position as string,
+        shotsAgainst: (g.shotsAgainst as number) ?? 0,
+        saves: (g.saves as number) ?? 0,
+        goalsAgainst: (g.goalsAgainst as number) ?? 0,
+        toi: (g.toi as string) ?? '0:00',
+        starter: (g.starter as boolean) ?? false,
+      }
+    }),
   }
 }
 
@@ -94,10 +97,10 @@ export const loadBoxScore = createAsyncThunk('gameDetail/loadBoxScore', async (g
     teamStats: data.teamGameStats ?? [],
     gameOutcome: data.gameOutcome?.lastPeriodType ?? null,
   }
-  const rawPgs = (data as any).playerByGameStats ?? {}
+  const rawPgs = ((data as unknown as Record<string, unknown>).playerByGameStats ?? {}) as Record<string, unknown>
   const playerStats: PlayerGameStats = {
-    awayTeam: parseTeamStats(rawPgs.awayTeam),
-    homeTeam: parseTeamStats(rawPgs.homeTeam),
+    awayTeam: parseTeamStats((rawPgs.awayTeam ?? {}) as Record<string, unknown>),
+    homeTeam: parseTeamStats((rawPgs.homeTeam ?? {}) as Record<string, unknown>),
   }
   return { boxScore, playerStats }
 })

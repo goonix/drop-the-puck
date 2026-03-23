@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useLayoutEffect, useRef } from 'react'
 
 export function usePolling(
   callback: () => void,
@@ -6,7 +6,9 @@ export function usePolling(
   enabled: boolean,
 ) {
   const savedCallback = useRef(callback)
-  savedCallback.current = callback
+  useLayoutEffect(() => {
+    savedCallback.current = callback
+  })
 
   useEffect(() => {
     if (!enabled) return
