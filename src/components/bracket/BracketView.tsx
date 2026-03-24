@@ -1,26 +1,26 @@
-import { useState } from 'react'
-import { useBracket } from '../../hooks/useBracket'
-import SeriesCard from './SeriesCard'
-import BracketOverlay from './BracketOverlay'
-import LoadingSpinner from '../common/LoadingSpinner'
-import ErrorMessage from '../common/ErrorMessage'
-import type { PlayoffSeries } from '../../types/bracket'
-import { MOCK_BRACKET } from './mockBracket'
+import { useState } from 'react';
+import { useBracket } from '../../hooks/useBracket';
+import { SeriesCard } from './SeriesCard';
+import { BracketOverlay } from './BracketOverlay';
+import { LoadingSpinner } from '../common/LoadingSpinner';
+import { ErrorMessage } from '../common/ErrorMessage';
+import type { PlayoffSeries } from '../../types/bracket';
+import { MOCK_BRACKET } from './mockBracket';
 
-const ROUND_ORDER = ['R1', 'R2', 'CF', 'SCF']
+const ROUND_ORDER = ['R1', 'R2', 'CF', 'SCF'];
 const ROUND_LABELS: Record<string, string> = {
   R1: '1st Round',
   R2: '2nd Round',
   CF: 'Conference Finals',
   SCF: 'Stanley Cup Final',
-}
+};
 
-export default function BracketView() {
-  const { data, status, error } = useBracket()
-  const [showTree, setShowTree] = useState(false)
-  const [useMock, setUseMock] = useState(false)
+export function BracketView() {
+  const { data, status, error } = useBracket();
+  const [showTree, setShowTree] = useState(false);
+  const [useMock, setUseMock] = useState(false);
 
-  const overlayData = useMock ? MOCK_BRACKET : data?.series ?? []
+  const overlayData = useMock ? MOCK_BRACKET : (data?.series ?? []);
 
   return (
     <>
@@ -30,7 +30,10 @@ export default function BracketView() {
           <div className="hidden md:flex items-center gap-2">
             {import.meta.env.DEV && (
               <button
-                onClick={() => { setUseMock(true); setShowTree(true) }}
+                onClick={() => {
+                  setUseMock(true);
+                  setShowTree(true);
+                }}
                 className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-medium rounded-lg bg-yellow-100 hover:bg-yellow-200 dark:bg-yellow-900/30 dark:hover:bg-yellow-900/50 text-yellow-700 dark:text-yellow-400 transition-colors"
                 title="Preview with mock data (dev only)"
               >
@@ -39,7 +42,10 @@ export default function BracketView() {
             )}
             {status === 'succeeded' && data && (
               <button
-                onClick={() => { setUseMock(false); setShowTree(true) }}
+                onClick={() => {
+                  setUseMock(false);
+                  setShowTree(true);
+                }}
                 className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-lg bg-gray-100 hover:bg-gray-200 dark:bg-gray-700/60 dark:hover:bg-gray-700 text-gray-600 dark:text-gray-300 transition-colors"
               >
                 <span>⬡</span> Full Bracket
@@ -55,38 +61,46 @@ export default function BracketView() {
       </div>
 
       {showTree && (
-        <BracketOverlay series={overlayData} onClose={() => { setShowTree(false); setUseMock(false) }} />
+        <BracketOverlay
+          series={overlayData}
+          onClose={() => {
+            setShowTree(false);
+            setUseMock(false);
+          }}
+        />
       )}
     </>
-  )
+  );
 }
 
 function renderBracket(series: PlayoffSeries[]) {
-  const byRound: Record<string, PlayoffSeries[]> = {}
+  const byRound: Record<string, PlayoffSeries[]> = {};
   for (const s of series) {
-    const key = s.seriesAbbrev
-    if (!byRound[key]) byRound[key] = []
-    byRound[key].push(s)
+    const key = s.seriesAbbrev;
+    if (!byRound[key]) byRound[key] = [];
+    byRound[key].push(s);
   }
 
   return (
     <div className="p-3 space-y-6">
-      {ROUND_ORDER.map(roundKey => {
-        const roundSeries = byRound[roundKey]
-        if (!roundSeries) return null
+      {ROUND_ORDER.map((roundKey) => {
+        const roundSeries = byRound[roundKey];
+        if (!roundSeries) return null;
         return (
           <div key={roundKey}>
             <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
               {ROUND_LABELS[roundKey]}
             </h3>
-            <div className={`grid gap-3 ${roundSeries.length > 1 ? 'grid-cols-2' : 'grid-cols-1 max-w-sm'}`}>
-              {roundSeries.map(s => (
+            <div
+              className={`grid gap-3 ${roundSeries.length > 1 ? 'grid-cols-2' : 'grid-cols-1 max-w-sm'}`}
+            >
+              {roundSeries.map((s) => (
                 <SeriesCard key={s.seriesLetter} series={s} />
               ))}
             </div>
           </div>
-        )
+        );
       })}
     </div>
-  )
+  );
 }

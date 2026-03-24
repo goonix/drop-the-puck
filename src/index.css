@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 @custom-variant dark (&:where(.dark, .dark *));
 
 @layer base {
@@ -10,10 +10,20 @@
 }
 
 @keyframes score-flash {
-  0%   { background-color: transparent; }
-  15%  { background-color: #fde047; color: #111827; border-radius: 6px; }
-  60%  { background-color: #fde04733; }
-  100% { background-color: transparent; }
+  0% {
+    background-color: transparent;
+  }
+  15% {
+    background-color: #fde047;
+    color: #111827;
+    border-radius: 6px;
+  }
+  60% {
+    background-color: #fde04733;
+  }
+  100% {
+    background-color: transparent;
+  }
 }
 
 .score-flash {

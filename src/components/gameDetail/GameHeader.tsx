@@ -1,12 +1,12 @@
-import { useEffect, useRef } from 'react'
-import type { BoxScore } from '../../types/gameDetail'
-import TeamLogo from '../common/TeamLogo'
-import { getGameStatus } from '../../utils/gameUtils'
-import { getTeamColor } from '../../utils/teamUtils'
-import type { NormalizedGame } from '../../types/schedule'
+import { useEffect, useRef } from 'react';
+import type { BoxScore } from '../../types/gameDetail';
+import { TeamLogo } from '../common/TeamLogo';
+import { getGameStatus } from '../../utils/gameUtils';
+import { getTeamColor } from '../../utils/teamUtils';
+import type { NormalizedGame } from '../../types/schedule';
 
 interface Props {
-  boxScore: BoxScore
+  boxScore: BoxScore;
 }
 
 // Adapt BoxScore to NormalizedGame-compatible shape for getGameStatus
@@ -33,12 +33,12 @@ function toGameLike(b: BoxScore): NormalizedGame {
     gameOutcome: b.gameOutcome,
     goals: [],
     tvBroadcasts: [],
-  }
+  };
 }
 
-export default function GameHeader({ boxScore }: Props) {
-  const status = getGameStatus(toGameLike(boxScore))
-  const homeColor = getTeamColor(boxScore.homeTeamAbbrev)
+export function GameHeader({ boxScore }: Props) {
+  const status = getGameStatus(toGameLike(boxScore));
+  const homeColor = getTeamColor(boxScore.homeTeamAbbrev);
 
   return (
     <div className="border-b border-gray-200 dark:border-gray-700/50">
@@ -66,7 +66,7 @@ export default function GameHeader({ boxScore }: Props) {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function TeamBlock({
@@ -75,37 +75,42 @@ function TeamBlock({
   sog,
   home = false,
 }: {
-  abbrev: string
-  name?: string
-  score: number
-  sog: number
-  home?: boolean
+  abbrev: string;
+  name?: string;
+  score: number;
+  sog: number;
+  home?: boolean;
 }) {
-  const prevScore = useRef(score)
-  const scoreRef = useRef<HTMLSpanElement>(null)
+  const prevScore = useRef(score);
+  const scoreRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     if (score > prevScore.current) {
-      prevScore.current = score
-      const el = scoreRef.current
+      prevScore.current = score;
+      const el = scoreRef.current;
       if (el) {
-        el.classList.remove('score-flash')
-        void el.offsetWidth // trigger reflow to restart animation
-        el.classList.add('score-flash')
+        el.classList.remove('score-flash');
+        void el.offsetWidth; // trigger reflow to restart animation
+        el.classList.add('score-flash');
       }
     } else {
-      prevScore.current = score
+      prevScore.current = score;
     }
-  }, [score])
+  }, [score]);
 
   return (
-    <div className={`flex flex-col items-center gap-1 flex-1 ${home ? 'items-end' : 'items-start'}`}>
+    <div
+      className={`flex flex-col items-center gap-1 flex-1 ${home ? 'items-end' : 'items-start'}`}
+    >
       <TeamLogo abbrev={abbrev} size={48} dark />
       <span className="text-sm text-gray-500 dark:text-gray-400 font-medium">{abbrev}</span>
-      <span ref={scoreRef} className="text-4xl font-bold text-gray-900 dark:text-white tabular-nums">
+      <span
+        ref={scoreRef}
+        className="text-4xl font-bold text-gray-900 dark:text-white tabular-nums"
+      >
         {score}
       </span>
       <span className="text-xs text-gray-400 dark:text-gray-500">{sog} SOG</span>
     </div>
-  )
+  );
 }

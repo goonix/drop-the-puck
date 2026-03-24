@@ -1,15 +1,15 @@
-import { useState } from 'react'
-import { getTeamLogoUrl } from '../../utils/teamUtils'
+import { useState } from 'react';
+import { getTeamLogoUrl } from '../../utils/teamUtils';
 
 interface Props {
-  abbrev: string
-  size?: number
-  dark?: boolean
-  className?: string
+  abbrev: string;
+  size?: number;
+  dark?: boolean;
+  className?: string;
 }
 
-export default function TeamLogo({ abbrev, size = 32, dark = false, className = '' }: Props) {
-  const [imgError, setImgError] = useState(false)
+export function TeamLogo({ abbrev, size = 32, dark = false, className = '' }: Props) {
+  const [imgError, setImgError] = useState(false);
 
   if (imgError) {
     return (
@@ -19,7 +19,7 @@ export default function TeamLogo({ abbrev, size = 32, dark = false, className = 
       >
         {abbrev.slice(0, 3)}
       </span>
-    )
+    );
   }
 
   return (
@@ -31,5 +31,5 @@ export default function TeamLogo({ abbrev, size = 32, dark = false, className = 
       className={className}
       onError={() => setImgError(true)}
     />
-  )
+  );
 }

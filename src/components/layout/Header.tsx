@@ -1,15 +1,15 @@
-import { useState } from 'react'
-import ThemeToggle from '../common/ThemeToggle'
-import FavoriteTeamPicker from '../common/FavoriteTeamPicker'
-import { useFavoriteTeams } from '../../hooks/useFavoriteTeam'
-import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { toggleHornMuted } from '../../store/slices/uiSlice'
+import { useState } from 'react';
+import { ThemeToggle } from '../common/ThemeToggle';
+import { FavoriteTeamPicker } from '../common/FavoriteTeamPicker';
+import { useFavoriteTeams } from '../../hooks/useFavoriteTeam';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { toggleHornMuted } from '../../store/slices/uiSlice';
 
-export default function Header() {
-  const [showPicker, setShowPicker] = useState(false)
-  const { favoriteTeamAbbrevs } = useFavoriteTeams()
-  const dispatch = useAppDispatch()
-  const hornMuted = useAppSelector(s => s.ui.hornMuted)
+export function Header() {
+  const [showPicker, setShowPicker] = useState(false);
+  const { favoriteTeamAbbrevs } = useFavoriteTeams();
+  const dispatch = useAppDispatch();
+  const hornMuted = useAppSelector((s) => s.ui.hornMuted);
 
   return (
     <>
@@ -26,7 +26,9 @@ export default function Header() {
           >
             <span className="text-yellow-500 dark:text-yellow-400">★</span>
             {favoriteTeamAbbrevs.length > 0 && (
-              <span className="text-xs text-gray-500 dark:text-gray-400">{favoriteTeamAbbrevs.length}</span>
+              <span className="text-xs text-gray-500 dark:text-gray-400">
+                {favoriteTeamAbbrevs.length}
+              </span>
             )}
           </button>
           <button
@@ -42,5 +44,5 @@ export default function Header() {
 
       {showPicker && <FavoriteTeamPicker onClose={() => setShowPicker(false)} />}
     </>
-  )
+  );
 }

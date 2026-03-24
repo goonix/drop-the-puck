@@ -1,18 +1,18 @@
-import type { PlayoffSeries } from '../../types/bracket'
-import TeamLogo from '../common/TeamLogo'
+import type { PlayoffSeries } from '../../types/bracket';
+import { TeamLogo } from '../common/TeamLogo';
 
 interface Props {
-  series: PlayoffSeries
+  series: PlayoffSeries;
 }
 
-export default function SeriesCard({ series }: Props) {
-  const top = series.topSeedTeam
-  const bot = series.bottomSeedTeam
-  const maxWins = 4
-  const topWon = series.topSeedWins === maxWins
-  const botWon = series.bottomSeedWins === maxWins
-  const inProgress = series.topSeedWins > 0 || series.bottomSeedWins > 0
-  const decided = topWon || botWon
+export function SeriesCard({ series }: Props) {
+  const top = series.topSeedTeam;
+  const bot = series.bottomSeedTeam;
+  const maxWins = 4;
+  const topWon = series.topSeedWins === maxWins;
+  const botWon = series.bottomSeedWins === maxWins;
+  const inProgress = series.topSeedWins > 0 || series.bottomSeedWins > 0;
+  const decided = topWon || botWon;
 
   return (
     <div className="bg-white dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700/50 rounded-xl p-3">
@@ -39,7 +39,7 @@ export default function SeriesCard({ series }: Props) {
         </p>
       )}
     </div>
-  )
+  );
 }
 
 function TeamMatchup({
@@ -50,12 +50,12 @@ function TeamMatchup({
   isLoser,
   inProgress,
 }: {
-  team: PlayoffSeries['topSeedTeam']
-  seedLabel: string
-  wins: number
-  isWinner: boolean
-  isLoser: boolean
-  inProgress: boolean
+  team: PlayoffSeries['topSeedTeam'];
+  seedLabel: string;
+  wins: number;
+  isWinner: boolean;
+  isLoser: boolean;
+  inProgress: boolean;
 }) {
   return (
     <div className={`flex items-center gap-2 ${isLoser ? 'opacity-40' : ''}`}>
@@ -65,14 +65,18 @@ function TeamMatchup({
       ) : (
         <span className="w-[22px] h-[22px] rounded-full bg-gray-200 dark:bg-gray-700 shrink-0" />
       )}
-      <span className={`flex-1 text-sm truncate ${isWinner ? 'font-bold text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'}`}>
+      <span
+        className={`flex-1 text-sm truncate ${isWinner ? 'font-bold text-gray-900 dark:text-white' : 'text-gray-700 dark:text-gray-300'}`}
+      >
         {team?.abbrev ?? 'TBD'}
       </span>
       {inProgress && (
-        <span className={`text-sm font-bold tabular-nums ${isWinner ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}>
+        <span
+          className={`text-sm font-bold tabular-nums ${isWinner ? 'text-gray-900 dark:text-white' : 'text-gray-500 dark:text-gray-400'}`}
+        >
           {wins}
         </span>
       )}
     </div>
-  )
+  );
 }

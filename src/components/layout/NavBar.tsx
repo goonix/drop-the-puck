@@ -1,21 +1,21 @@
-import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { setActiveView } from '../../store/slices/uiSlice'
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { setActiveView } from '../../store/slices/uiSlice';
 
-type View = 'schedule' | 'standings' | 'bracket'
+type View = 'schedule' | 'standings' | 'bracket';
 
 const TABS: { id: View; label: string }[] = [
   { id: 'schedule', label: 'Schedule' },
   { id: 'standings', label: 'Standings' },
   { id: 'bracket', label: 'Bracket' },
-]
+];
 
-export default function NavBar() {
-  const dispatch = useAppDispatch()
-  const activeView = useAppSelector(s => s.ui.activeView)
+export function NavBar() {
+  const dispatch = useAppDispatch();
+  const activeView = useAppSelector((s) => s.ui.activeView);
 
   return (
     <nav className="hidden md:flex border-b border-gray-200 dark:border-gray-700/50 shrink-0">
-      {TABS.map(tab => (
+      {TABS.map((tab) => (
         <button
           key={tab.id}
           onClick={() => dispatch(setActiveView(tab.id))}
@@ -29,5 +29,5 @@ export default function NavBar() {
         </button>
       ))}
     </nav>
-  )
+  );
 }

@@ -1,32 +1,40 @@
-import type { ScoringPlay } from '../../types/gameDetail'
-import TeamLogo from '../common/TeamLogo'
+import type { ScoringPlay } from '../../types/gameDetail';
+import { TeamLogo } from '../common/TeamLogo';
 
 interface Props {
-  play: ScoringPlay
-  awayAbbrev: string
-  homeAbbrev?: string
+  play: ScoringPlay;
+  awayAbbrev: string;
+  homeAbbrev?: string;
 }
 
 function periodLabel(periodType: string, period: number): string {
-  if (periodType === 'OT') return 'OT'
-  if (periodType === 'SO') return 'SO'
-  return `P${period}`
+  if (periodType === 'OT') return 'OT';
+  if (periodType === 'SO') return 'SO';
+  return `P${period}`;
 }
 
-export default function ScoringEvent({ play, awayAbbrev }: Props) {
-  const isAway = play.teamAbbrev === awayAbbrev
+export function ScoringEvent({ play, awayAbbrev }: Props) {
+  const isAway = play.teamAbbrev === awayAbbrev;
   const assists = [
-    play.assist1Name ? `${play.assist1Name}${play.assist1Total != null ? ` (${play.assist1Total})` : ''}` : null,
-    play.assist2Name ? `${play.assist2Name}${play.assist2Total != null ? ` (${play.assist2Total})` : ''}` : null,
-  ].filter(Boolean)
+    play.assist1Name
+      ? `${play.assist1Name}${play.assist1Total != null ? ` (${play.assist1Total})` : ''}`
+      : null,
+    play.assist2Name
+      ? `${play.assist2Name}${play.assist2Total != null ? ` (${play.assist2Total})` : ''}`
+      : null,
+  ].filter(Boolean);
 
   return (
     <div className="flex items-start gap-3 py-2.5 border-b border-gray-100 dark:border-gray-700/30 last:border-0">
       {/* Score */}
       <div className="flex items-center gap-1 min-w-[52px] text-sm tabular-nums font-bold">
-        <span className={isAway ? 'text-gray-900 dark:text-white' : 'text-gray-400'}>{play.awayScore}</span>
+        <span className={isAway ? 'text-gray-900 dark:text-white' : 'text-gray-400'}>
+          {play.awayScore}
+        </span>
         <span className="text-gray-300 dark:text-gray-600">–</span>
-        <span className={!isAway ? 'text-gray-900 dark:text-white' : 'text-gray-400'}>{play.homeScore}</span>
+        <span className={!isAway ? 'text-gray-900 dark:text-white' : 'text-gray-400'}>
+          {play.homeScore}
+        </span>
       </div>
 
       {/* Team logo */}
@@ -38,7 +46,9 @@ export default function ScoringEvent({ play, awayAbbrev }: Props) {
           src={play.scorerHeadshot}
           alt={play.scorerName}
           className="w-7 h-7 rounded-full object-cover shrink-0 bg-gray-200 dark:bg-gray-700"
-          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none' }}
+          onError={(e) => {
+            (e.target as HTMLImageElement).style.display = 'none';
+          }}
         />
       )}
 
@@ -47,7 +57,9 @@ export default function ScoringEvent({ play, awayAbbrev }: Props) {
         <p className="text-sm text-gray-900 dark:text-white font-medium truncate">
           {play.scorerName} ({play.scorerTotal})
           {play.goalModifier && play.goalModifier !== 'none' && (
-            <span className="ml-1 text-xs text-gray-500 dark:text-gray-400 uppercase">{play.goalModifier}</span>
+            <span className="ml-1 text-xs text-gray-500 dark:text-gray-400 uppercase">
+              {play.goalModifier}
+            </span>
           )}
         </p>
         {assists.length > 0 && (
@@ -61,5 +73,5 @@ export default function ScoringEvent({ play, awayAbbrev }: Props) {
         <div>{play.timeInPeriod}</div>
       </div>
     </div>
-  )
+  );
 }

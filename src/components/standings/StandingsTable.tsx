@@ -1,16 +1,21 @@
-import type { TeamStanding } from '../../types/standings'
-import TeamRow from './TeamRow'
+import type { TeamStanding } from '../../types/standings';
+import { TeamRow } from './TeamRow';
 
 interface Props {
-  title: string
-  standings: TeamStanding[]
-  headerClassName?: string
+  title: string;
+  standings: TeamStanding[];
+  headerClassName?: string;
 }
 
-export default function StandingsTable({ title, standings, headerClassName }: Props) {
+export function StandingsTable({ title, standings, headerClassName }: Props) {
   return (
     <div className="mb-4">
-      <h3 className={headerClassName ?? 'text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 py-2 bg-gray-100 dark:bg-gray-800/60'}>
+      <h3
+        className={
+          headerClassName ??
+          'text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider px-3 py-2 bg-gray-100 dark:bg-gray-800/60'
+        }
+      >
         {title}
       </h3>
       <table className="w-full">
@@ -23,7 +28,9 @@ export default function StandingsTable({ title, standings, headerClassName }: Pr
             <th className="py-1.5 px-2 text-center text-xs text-gray-500 font-medium">L</th>
             <th className="py-1.5 px-2 text-center text-xs text-gray-500 font-medium">OTL</th>
             <th className="py-1.5 pl-2 pr-3 text-center text-xs text-gray-500 font-medium">PTS</th>
-            <th className="py-1.5 px-2 text-center text-xs text-gray-500 font-medium hidden sm:table-cell">STK</th>
+            <th className="py-1.5 px-2 text-center text-xs text-gray-500 font-medium hidden sm:table-cell">
+              STK
+            </th>
           </tr>
         </thead>
         <tbody>
@@ -33,5 +40,5 @@ export default function StandingsTable({ title, standings, headerClassName }: Pr
         </tbody>
       </table>
     </div>
-  )
+  );
 }

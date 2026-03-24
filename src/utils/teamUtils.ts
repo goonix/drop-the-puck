@@ -1,6 +1,6 @@
 export function getTeamLogoUrl(abbrev: string, dark = false): string {
-  const variant = dark ? 'dark' : 'light'
-  return `https://assets.nhle.com/logos/nhl/svg/${abbrev}_${variant}.svg`
+  const variant = dark ? 'dark' : 'light';
+  return `https://assets.nhle.com/logos/nhl/svg/${abbrev}_${variant}.svg`;
 }
 
 // Primary team colors keyed by abbreviation
@@ -37,10 +37,10 @@ export const TEAM_COLORS: Record<string, string> = {
   VGK: '#B4975A',
   WPG: '#041E42',
   WSH: '#041E42',
-}
+};
 
 export function getTeamColor(abbrev: string): string {
-  return TEAM_COLORS[abbrev] ?? '#6B7280'
+  return TEAM_COLORS[abbrev] ?? '#6B7280';
 }
 
 export const TEAM_NAMES: Record<string, string> = {
@@ -76,10 +76,10 @@ export const TEAM_NAMES: Record<string, string> = {
   VGK: 'Vegas Golden Knights',
   WPG: 'Winnipeg Jets',
   WSH: 'Washington Capitals',
-}
+};
 
 export function getTeamFullName(abbrev: string): string {
-  return TEAM_NAMES[abbrev] ?? abbrev
+  return TEAM_NAMES[abbrev] ?? abbrev;
 }
 
-export const ALL_TEAMS = Object.keys(TEAM_NAMES).sort()
+export const ALL_TEAMS = Object.keys(TEAM_NAMES).sort();

@@ -1,9 +1,9 @@
 interface Props {
-  message: string
-  onRetry?: () => void
+  message: string;
+  onRetry?: () => void;
 }
 
-export default function ErrorMessage({ message, onRetry }: Props) {
+export function ErrorMessage({ message, onRetry }: Props) {
   return (
     <div className="flex flex-col items-center justify-center py-12 gap-3 text-center px-4">
       <p className="text-red-400">{message}</p>
@@ -16,5 +16,5 @@ export default function ErrorMessage({ message, onRetry }: Props) {
         </button>
       )}
     </div>
-  )
+  );
 }

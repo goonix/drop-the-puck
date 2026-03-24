@@ -1,13 +1,13 @@
-import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { setStandingsGrouping } from '../../store/slices/uiSlice'
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { setStandingsGrouping } from '../../store/slices/uiSlice';
 
-export default function StandingsToggle() {
-  const dispatch = useAppDispatch()
-  const grouping = useAppSelector(s => s.ui.standingsGrouping)
+export function StandingsToggle() {
+  const dispatch = useAppDispatch();
+  const grouping = useAppSelector((s) => s.ui.standingsGrouping);
 
   return (
     <div className="flex gap-1 p-1 bg-gray-100 dark:bg-gray-800 rounded-lg">
-      {(['conference', 'division', 'wildcard'] as const).map(g => (
+      {(['conference', 'division', 'wildcard'] as const).map((g) => (
         <button
           key={g}
           onClick={() => dispatch(setStandingsGrouping(g))}
@@ -21,5 +21,5 @@ export default function StandingsToggle() {
         </button>
       ))}
     </div>
-  )
+  );
 }

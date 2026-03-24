@@ -1,40 +1,40 @@
-import { useEffect, useRef } from 'react'
-import { playGoalHorn } from '../../utils/goalHorn'
-import type { NormalizedGame } from '../../types/schedule'
-import TeamLogo from '../common/TeamLogo'
-import GameStatusBadge from './GameStatusBadge'
-import { isLive, isFinal } from '../../utils/gameUtils'
-import { getTeamColor } from '../../utils/teamUtils'
-import { useFavoriteTeams } from '../../hooks/useFavoriteTeam'
-import { useAppDispatch, useAppSelector } from '../../store/hooks'
-import { setSelectedGame } from '../../store/slices/scheduleSlice'
-import { setActiveView } from '../../store/slices/uiSlice'
+import { useEffect, useRef } from 'react';
+import { playGoalHorn } from '../../utils/goalHorn';
+import type { NormalizedGame } from '../../types/schedule';
+import { TeamLogo } from '../common/TeamLogo';
+import { GameStatusBadge } from './GameStatusBadge';
+import { isLive, isFinal } from '../../utils/gameUtils';
+import { getTeamColor } from '../../utils/teamUtils';
+import { useFavoriteTeams } from '../../hooks/useFavoriteTeam';
+import { useAppDispatch, useAppSelector } from '../../store/hooks';
+import { setSelectedGame } from '../../store/slices/scheduleSlice';
+import { setActiveView } from '../../store/slices/uiSlice';
 
 interface Props {
-  game: NormalizedGame
+  game: NormalizedGame;
 }
 
-export default function GameCard({ game }: Props) {
-  const dispatch = useAppDispatch()
-  const selectedGameId = useAppSelector(s => s.schedule.selectedGameId)
-  const hornMuted = useAppSelector(s => s.ui.hornMuted)
-  const { isFavorite } = useFavoriteTeams()
+export function GameCard({ game }: Props) {
+  const dispatch = useAppDispatch();
+  const selectedGameId = useAppSelector((s) => s.schedule.selectedGameId);
+  const hornMuted = useAppSelector((s) => s.ui.hornMuted);
+  const { isFavorite } = useFavoriteTeams();
 
-  const isSelected = selectedGameId === game.id
-  const live = isLive(game)
-  const final = isFinal(game)
-  const awayFav = isFavorite(game.awayTeamAbbrev)
-  const homeFav = isFavorite(game.homeTeamAbbrev)
-  const hasFavorite = awayFav || homeFav
+  const isSelected = selectedGameId === game.id;
+  const live = isLive(game);
+  const final = isFinal(game);
+  const awayFav = isFavorite(game.awayTeamAbbrev);
+  const homeFav = isFavorite(game.homeTeamAbbrev);
+  const hasFavorite = awayFav || homeFav;
 
   const handleClick = () => {
-    dispatch(setSelectedGame(game.id))
-    dispatch(setActiveView('gameDetail'))
-  }
+    dispatch(setSelectedGame(game.id));
+    dispatch(setActiveView('gameDetail'));
+  };
 
   const favoriteColor = hasFavorite
     ? getTeamColor(awayFav ? game.awayTeamAbbrev : game.homeTeamAbbrev)
-    : null
+    : null;
 
   return (
     <button
@@ -46,7 +46,7 @@ export default function GameCard({ game }: Props) {
       } ${hasFavorite ? 'ring-1' : ''}`}
       style={
         hasFavorite && favoriteColor
-          ? { '--tw-ring-color': favoriteColor + '80' } as React.CSSProperties
+          ? ({ '--tw-ring-color': favoriteColor + '80' } as React.CSSProperties)
           : undefined
       }
     >
@@ -82,61 +82,69 @@ export default function GameCard({ game }: Props) {
       {!live && !final && game.tvBroadcasts.length > 0 && (
         <div className="mt-2 flex flex-wrap gap-1">
           {game.tvBroadcasts
-            .filter(b => b.market === 'N')
+            .filter((b) => b.market === 'N')
             .slice(0, 3)
-            .map(b => (
-              <span key={b.network} className="text-xs px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded">
+            .map((b) => (
+              <span
+                key={b.network}
+                className="text-xs px-1.5 py-0.5 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded"
+              >
                 {b.network}
               </span>
             ))}
         </div>
       )}
     </button>
-  )
+  );
 }
 
 interface TeamScoreRowProps {
-  abbrev: string
-  name: string
-  score: number
-  sog: number
-  isWinner: boolean
-  showScore: boolean
-  isFav: boolean
-  hornMuted: boolean
+  abbrev: string;
+  name: string;
+  score: number;
+  sog: number;
+  isWinner: boolean;
+  showScore: boolean;
+  isFav: boolean;
+  hornMuted: boolean;
 }
 
 function TeamScoreRow({ abbrev, score, isWinner, showScore, isFav, hornMuted }: TeamScoreRowProps) {
-  const prevScore = useRef(score)
-  const scoreRef = useRef<HTMLSpanElement>(null)
+  const prevScore = useRef(score);
+  const scoreRef = useRef<HTMLSpanElement>(null);
 
   useEffect(() => {
     if (score > prevScore.current) {
-      prevScore.current = score
-      if (!hornMuted) playGoalHorn(abbrev)
-      const el = scoreRef.current
+      prevScore.current = score;
+      if (!hornMuted) playGoalHorn(abbrev);
+      const el = scoreRef.current;
       if (el) {
-        el.classList.remove('score-flash')
-        void el.offsetWidth // trigger reflow to restart animation
-        el.classList.add('score-flash')
+        el.classList.remove('score-flash');
+        void el.offsetWidth; // trigger reflow to restart animation
+        el.classList.add('score-flash');
       }
     } else {
-      prevScore.current = score
+      prevScore.current = score;
     }
-  }, [score, abbrev, hornMuted])
+  }, [score, abbrev, hornMuted]);
 
   return (
     <div className="flex items-center gap-2">
       <TeamLogo abbrev={abbrev} size={28} dark />
-      <span className={`flex-1 text-sm truncate ${isWinner ? 'font-semibold text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-300'}`}>
+      <span
+        className={`flex-1 text-sm truncate ${isWinner ? 'font-semibold text-gray-900 dark:text-white' : 'text-gray-600 dark:text-gray-300'}`}
+      >
         {abbrev}
         {isFav && <span className="ml-1 text-yellow-500 dark:text-yellow-400">★</span>}
       </span>
       {showScore && (
-        <span ref={scoreRef} className={`text-lg font-bold tabular-nums ${isWinner ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}>
+        <span
+          ref={scoreRef}
+          className={`text-lg font-bold tabular-nums ${isWinner ? 'text-gray-900 dark:text-white' : 'text-gray-400'}`}
+        >
           {score}
         </span>
       )}
     </div>
-  )
+  );
 }

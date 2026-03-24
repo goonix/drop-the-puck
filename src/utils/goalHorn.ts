@@ -8,19 +8,19 @@
  *   /public/sounds/horns/default.mp3  ← required fallback
  */
 export function playGoalHorn(abbrev: string): void {
-  const teamSrc = `/sounds/horns/${abbrev}.mp3`
-  const defaultSrc = `/sounds/horns/default.mp3`
+  const teamSrc = `/sounds/horns/${abbrev}.mp3`;
+  const defaultSrc = `/sounds/horns/default.mp3`;
 
-  const audio = new Audio(teamSrc)
+  const audio = new Audio(teamSrc);
 
   audio.onerror = () => {
-    const fallback = new Audio(defaultSrc)
+    const fallback = new Audio(defaultSrc);
     fallback.play().catch(() => {
       // Browser blocked autoplay or default file missing — silently ignore
-    })
-  }
+    });
+  };
 
   audio.play().catch(() => {
     // Browser blocked autoplay — silently ignore
-  })
+  });
 }

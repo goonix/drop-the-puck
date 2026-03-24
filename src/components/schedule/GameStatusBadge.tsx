@@ -1,14 +1,14 @@
-import type { NormalizedGame } from '../../types/schedule'
-import { isLive, isFinal, getGameStatus } from '../../utils/gameUtils'
+import type { NormalizedGame } from '../../types/schedule';
+import { isLive, isFinal, getGameStatus } from '../../utils/gameUtils';
 
 interface Props {
-  game: NormalizedGame
+  game: NormalizedGame;
 }
 
-export default function GameStatusBadge({ game }: Props) {
-  const status = getGameStatus(game)
-  const live = isLive(game)
-  const final = isFinal(game)
+export function GameStatusBadge({ game }: Props) {
+  const status = getGameStatus(game);
+  const live = isLive(game);
+  const final = isFinal(game);
 
   if (live) {
     return (
@@ -16,7 +16,7 @@ export default function GameStatusBadge({ game }: Props) {
         <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
         {status}
       </span>
-    )
+    );
   }
 
   if (final) {
@@ -24,12 +24,8 @@ export default function GameStatusBadge({ game }: Props) {
       <span className="text-xs text-gray-500 dark:text-gray-400 font-medium uppercase tracking-wide">
         {status}
       </span>
-    )
+    );
   }
 
-  return (
-    <span className="text-xs text-gray-500 dark:text-gray-400">
-      {status}
-    </span>
-  )
+  return <span className="text-xs text-gray-500 dark:text-gray-400">{status}</span>;
 }

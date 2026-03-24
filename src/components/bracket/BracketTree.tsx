@@ -1,41 +1,41 @@
-import type { PlayoffSeries } from '../../types/bracket'
-import BracketTreeCard from './BracketTreeCard'
+import type { PlayoffSeries } from '../../types/bracket';
+import { BracketTreeCard } from './BracketTreeCard';
 
 // Layout constants (px)
-const SLOT = 88    // height of one R1 slot
-const TOTAL_H = SLOT * 4  // 352 — total bracket height
-const COL_W = 160  // width of a series card column
-const GAP_W = 36   // width of a connector SVG column
-const STROKE = '#6b7280'
+const SLOT = 88; // height of one R1 slot
+const TOTAL_H = SLOT * 4; // 352 — total bracket height
+const COL_W = 160; // width of a series card column
+const GAP_W = 36; // width of a connector SVG column
+const STROKE = '#6b7280';
 
 function detectConf(s: PlayoffSeries): 'E' | 'W' | null {
-  const t = s.seriesTitle.toLowerCase()
-  if (t.includes('eastern')) return 'E'
-  if (t.includes('western')) return 'W'
-  return null
+  const t = s.seriesTitle.toLowerCase();
+  if (t.includes('eastern')) return 'E';
+  if (t.includes('western')) return 'W';
+  return null;
 }
 
 function sortedBy(arr: PlayoffSeries[]) {
-  return [...arr].sort((a, b) => a.seriesLetter.localeCompare(b.seriesLetter))
+  return [...arr].sort((a, b) => a.seriesLetter.localeCompare(b.seriesLetter));
 }
 
 function structureBracket(series: PlayoffSeries[]) {
   const by = (round: string, conf: 'E' | 'W' | null) =>
-    sortedBy(series.filter(s => s.seriesAbbrev === round && detectConf(s) === conf))
+    sortedBy(series.filter((s) => s.seriesAbbrev === round && detectConf(s) === conf));
   return {
     westR1: by('R1', 'W'),
     westR2: by('R2', 'W'),
     westCF: by('CF', 'W'),
-    scf:    series.filter(s => s.seriesAbbrev === 'SCF'),
+    scf: series.filter((s) => s.seriesAbbrev === 'SCF'),
     eastCF: by('CF', 'E'),
     eastR2: by('R2', 'E'),
     eastR1: by('R1', 'E'),
-  }
+  };
 }
 
 // A column of series cards, each occupying `slotSpan` slots vertically
 function SeriesColumn({ series, slotSpan }: { series: PlayoffSeries[]; slotSpan: number }) {
-  const slotH = SLOT * slotSpan
+  const slotH = SLOT * slotSpan;
   return (
     <div style={{ width: COL_W, height: TOTAL_H, position: 'relative', flexShrink: 0 }}>
       {series.map((s, i) => (
@@ -54,40 +54,38 @@ function SeriesColumn({ series, slotSpan }: { series: PlayoffSeries[]; slotSpan:
         </div>
       ))}
     </div>
-  )
+  );
 }
 
-type ConnType = 'w-r1r2' | 'w-r2cf' | 'w-cfscf' | 'e-r1r2' | 'e-r2cf' | 'e-cfscf'
+type ConnType = 'w-r1r2' | 'w-r2cf' | 'w-cfscf' | 'e-r1r2' | 'e-r2cf' | 'e-cfscf';
 
 // SVG connector drawn in the gap between two columns
 function Connector({ type }: { type: ConnType }) {
-  const isEast = type.startsWith('e-')
+  const isEast = type.startsWith('e-');
   // West: spine on left (x=0), arms go right. East: spine on right (x=GAP_W), arms go left.
-  const spineX = isEast ? GAP_W : 0
-  const armEnd = isEast ? 0 : GAP_W
+  const spineX = isEast ? GAP_W : 0;
+  const armEnd = isEast ? 0 : GAP_W;
 
-  type Line = { x1: number; y1: number; x2: number; y2: number }
-  let lines: Line[] = []
+  type Line = { x1: number; y1: number; x2: number; y2: number };
+  let lines: Line[] = [];
 
   if (type === 'w-r1r2' || type === 'e-r1r2') {
     // Two bracket forks: R1[0+1]→R2[0], R1[2+3]→R2[1]
     lines = [
       { x1: spineX, y1: SLOT * 0.5, x2: spineX, y2: SLOT * 1.5 },
-      { x1: spineX, y1: SLOT * 1.0, x2: armEnd,  y2: SLOT * 1.0 },
-      { x1: spineX, y1: SLOT * 2.5, x2: spineX,  y2: SLOT * 3.5 },
-      { x1: spineX, y1: SLOT * 3.0, x2: armEnd,  y2: SLOT * 3.0 },
-    ]
+      { x1: spineX, y1: SLOT * 1.0, x2: armEnd, y2: SLOT * 1.0 },
+      { x1: spineX, y1: SLOT * 2.5, x2: spineX, y2: SLOT * 3.5 },
+      { x1: spineX, y1: SLOT * 3.0, x2: armEnd, y2: SLOT * 3.0 },
+    ];
   } else if (type === 'w-r2cf' || type === 'e-r2cf') {
     // R2[0] + R2[1] → CF[0]
     lines = [
       { x1: spineX, y1: SLOT * 1.0, x2: spineX, y2: SLOT * 3.0 },
-      { x1: spineX, y1: SLOT * 2.0, x2: armEnd,  y2: SLOT * 2.0 },
-    ]
+      { x1: spineX, y1: SLOT * 2.0, x2: armEnd, y2: SLOT * 2.0 },
+    ];
   } else {
     // CF → SCF: single horizontal at vertical center
-    lines = [
-      { x1: 0, y1: SLOT * 2.0, x2: GAP_W, y2: SLOT * 2.0 },
-    ]
+    lines = [{ x1: 0, y1: SLOT * 2.0, x2: GAP_W, y2: SLOT * 2.0 }];
   }
 
   return (
@@ -96,7 +94,7 @@ function Connector({ type }: { type: ConnType }) {
         <line key={i} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} stroke={STROKE} strokeWidth={1} />
       ))}
     </svg>
-  )
+  );
 }
 
 // Column header labels
@@ -109,7 +107,7 @@ function ColumnHeaders() {
     >
       {label}
     </div>
-  )
+  );
 
   return (
     <div className="flex mb-3">
@@ -127,46 +125,52 @@ function ColumnHeaders() {
       {col('', GAP_W, true)}
       {col('1st Round', COL_W)}
     </div>
-  )
+  );
 }
 
 // Conference banners spanning columns
 function ConferenceBanners() {
-  const confW = COL_W * 3 + GAP_W * 2
-  const scfW = COL_W
-  const gap = GAP_W
+  const confW = COL_W * 3 + GAP_W * 2;
+  const scfW = COL_W;
+  const gap = GAP_W;
 
   return (
     <div className="flex mb-1">
-      <div style={{ width: confW }} className="text-center text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest">
+      <div
+        style={{ width: confW }}
+        className="text-center text-xs font-bold text-orange-600 dark:text-orange-400 uppercase tracking-widest"
+      >
         Western Conference
       </div>
       <div style={{ width: gap }} />
       <div style={{ width: scfW }} />
       <div style={{ width: gap }} />
-      <div style={{ width: confW }} className="text-center text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest">
+      <div
+        style={{ width: confW }}
+        className="text-center text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest"
+      >
         Eastern Conference
       </div>
     </div>
-  )
+  );
 }
 
 interface Props {
-  series: PlayoffSeries[]
+  series: PlayoffSeries[];
 }
 
-export default function BracketTree({ series }: Props) {
-  const b = structureBracket(series)
+export function BracketTree({ series }: Props) {
+  const b = structureBracket(series);
 
   // If no data is structured yet, show a placeholder
-  const hasData = b.westR1.length > 0 || b.eastR1.length > 0
+  const hasData = b.westR1.length > 0 || b.eastR1.length > 0;
 
   if (!hasData) {
     return (
       <div className="flex items-center justify-center py-12 text-gray-400 dark:text-gray-600 text-sm">
         Bracket data unavailable
       </div>
-    )
+    );
   }
 
   return (
@@ -189,5 +193,5 @@ export default function BracketTree({ series }: Props) {
         <SeriesColumn series={b.eastR1} slotSpan={1} />
       </div>
     </div>
-  )
+  );
 }
