@@ -1,0 +1,22 @@
+
+⏺ Not a huge refactor overall — the codebase already follows most of it. The gaps are:
+
+  Low effort (worth doing):
+  - A few remaining as Foo type assertions in API parsing code — we mostly fixed these already
+  - Magic numbers in BracketTree.tsx are already named constants, so that's fine
+  - Prettier isn't configured — npm install -D prettier + config file
+
+  Medium effort:
+  - Default exports everywhere — the guideline says named exports, but the whole codebase uses export default.
+  Touching every file, though mechanical
+  - Derived state in Redux — scoringPlays and byPeriod are computed from plays and stored in Redux state. The
+  guideline says don't store what can be computed. Could move these to selectors instead
+
+  Won't conform without major rework:
+  - TanStack Query / SWR — the guideline says use a data-fetching library, but the app is built around Redux Toolkit +
+   custom polling hooks. This would be a near-complete rewrite of the data layer. I'd treat this as a deliberate
+  exception given the architecture
+
+  Currently missing entirely:
+  - Tests (Vitest + Playwright) — no tests exist
+  - CI pipeline

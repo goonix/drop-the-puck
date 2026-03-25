@@ -12,6 +12,7 @@ interface UIState {
   selectedDate: string;
   standingsGrouping: StandingsGrouping;
   hornMuted: boolean;
+  selectedGameId: number | null;
 }
 
 function getInitialTheme(): Theme {
@@ -47,6 +48,7 @@ const initialState: UIState = {
   selectedDate: todayString(),
   standingsGrouping: 'conference',
   hornMuted: getInitialHornMuted(),
+  selectedGameId: null,
 };
 
 const uiSlice = createSlice({
@@ -88,6 +90,9 @@ const uiSlice = createSlice({
       state.hornMuted = !state.hornMuted;
       localStorage.setItem('hornMuted', String(state.hornMuted));
     },
+    setSelectedGame(state, action: PayloadAction<number | null>) {
+      state.selectedGameId = action.payload;
+    },
   },
 });
 
@@ -100,5 +105,6 @@ export const {
   toggleFavoriteTeam,
   setFavoriteTeams,
   toggleHornMuted,
+  setSelectedGame,
 } = uiSlice.actions;
 export const reducer = uiSlice.reducer;

@@ -1,5 +1,5 @@
 import { useAppSelector } from '../../store/hooks';
-import { useStandings } from '../../hooks/useStandings';
+import { useStandingsQuery } from '../../hooks/useStandingsQuery';
 import { StandingsToggle } from './StandingsToggle';
 import { StandingsTable } from './StandingsTable';
 import { LoadingSpinner } from '../common/LoadingSpinner';
@@ -7,7 +7,7 @@ import { ErrorMessage } from '../common/ErrorMessage';
 import type { TeamStanding } from '../../types/standings';
 
 export function StandingsView() {
-  const { standings, status, error } = useStandings();
+  const { standings, isLoading, isError, error } = useStandingsQuery();
   const grouping = useAppSelector((s) => s.ui.standingsGrouping);
 
   return (
@@ -16,10 +16,14 @@ export function StandingsView() {
         <StandingsToggle />
       </div>
       <div className="flex-1 overflow-y-auto">
-        {status === 'loading' && <LoadingSpinner />}
-        {status === 'failed' && <ErrorMessage message={error ?? 'Failed to load standings'} />}
-        {status === 'succeeded' && grouping === 'wildcard' && renderWildcard(standings)}
-        {status === 'succeeded' && grouping !== 'wildcard' && renderGrouped(standings, grouping)}
+        {isLoading && <LoadingSpinner />}
+        {isError && (
+          <ErrorMessage
+            message={error instanceof Error ? error.message : 'Failed to load standings'}
+          />
+        )}
+        {!isLoading && !isError && grouping === 'wildcard' && renderWildcard(standings)}
+        {!isLoading && !isError && grouping !== 'wildcard' && renderGrouped(standings, grouping)}
       </div>
     </div>
   );

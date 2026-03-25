@@ -13,7 +13,7 @@ import { BracketView } from '../bracket/BracketView';
 export function AppShell() {
   const dispatch = useAppDispatch();
   const activeView = useAppSelector((s) => s.ui.activeView);
-  const selectedGameId = useAppSelector((s) => s.schedule.selectedGameId);
+  const selectedGameId = useAppSelector((s) => s.ui.selectedGameId);
   const theme = useAppSelector((s) => s.ui.theme);
 
   // Sync theme to document

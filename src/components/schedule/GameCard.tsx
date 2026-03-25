@@ -7,8 +7,7 @@ import { isLive, isFinal } from '../../utils/gameUtils';
 import { getTeamColor } from '../../utils/teamUtils';
 import { useFavoriteTeams } from '../../hooks/useFavoriteTeam';
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { setSelectedGame } from '../../store/slices/scheduleSlice';
-import { setActiveView } from '../../store/slices/uiSlice';
+import { setSelectedGame, setActiveView } from '../../store/slices/uiSlice';
 
 interface Props {
   game: NormalizedGame;
@@ -16,7 +15,7 @@ interface Props {
 
 export function GameCard({ game }: Props) {
   const dispatch = useAppDispatch();
-  const selectedGameId = useAppSelector((s) => s.schedule.selectedGameId);
+  const selectedGameId = useAppSelector((s) => s.ui.selectedGameId);
   const hornMuted = useAppSelector((s) => s.ui.hornMuted);
   const { isFavorite } = useFavoriteTeams();
 

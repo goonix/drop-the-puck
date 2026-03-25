@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAppSelector } from '../../store/hooks';
-import { useGameDetail } from '../../hooks/useGameDetail';
+import { useGameDetailQuery } from '../../hooks/useGameDetailQuery';
 import { GameHeader } from './GameHeader';
 import { BoxScore } from './BoxScore';
 import { ScoringPlays } from './ScoringPlays';
@@ -17,9 +17,9 @@ interface Props {
 
 export function GameDetailView({ onClose }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('scoring');
-  const gameId = useAppSelector((s) => s.schedule.selectedGameId);
+  const gameId = useAppSelector((s) => s.ui.selectedGameId);
   const { boxScore, plays, scoringPlays, players, playerStats, boxScoreStatus, playsStatus } =
-    useGameDetail(gameId);
+    useGameDetailQuery(gameId);
 
   if (!gameId) {
     return (

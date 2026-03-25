@@ -1,13 +1,15 @@
 import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { setSelectedDate } from '../../store/slices/uiSlice';
-import { setSelectedGame } from '../../store/slices/scheduleSlice';
+import { setSelectedDate, setSelectedGame } from '../../store/slices/uiSlice';
 import { prevDate, nextDate, formatDisplayDate, todayString } from '../../utils/dateUtils';
 
-export function DateNavigator() {
+interface Props {
+  prevDate: string | null;
+  nextDate: string | null;
+}
+
+export function DateNavigator({ prevDate: prevD, nextDate: nextD }: Props) {
   const dispatch = useAppDispatch();
   const selectedDate = useAppSelector((s) => s.ui.selectedDate);
-  const prevD = useAppSelector((s) => s.schedule.prevDate);
-  const nextD = useAppSelector((s) => s.schedule.nextDate);
 
   const navigate = (date: string) => {
     dispatch(setSelectedDate(date));

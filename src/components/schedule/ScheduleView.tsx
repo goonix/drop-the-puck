@@ -1,28 +1,22 @@
 import { useRef } from 'react';
 import { useAppSelector } from '../../store/hooks';
-import { useSchedule } from '../../hooks/useSchedule';
+import { useScheduleQuery } from '../../hooks/useScheduleQuery';
 import { DateNavigator } from './DateNavigator';
 import { GameList } from './GameList';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { ErrorMessage } from '../common/ErrorMessage';
-import { useAppDispatch } from '../../store/hooks';
-import { loadSchedule } from '../../store/slices/scheduleSlice';
 import { usePullToRefresh } from '../../hooks/usePullToRefresh';
 
 export function ScheduleView() {
-  const dispatch = useAppDispatch();
   const selectedDate = useAppSelector((s) => s.ui.selectedDate);
-  const { games, status, error } = useSchedule(selectedDate);
+  const { games, prevDate, nextDate, isLoading, isError, error, refetch } =
+    useScheduleQuery(selectedDate);
   const scrollRef = useRef<HTMLDivElement>(null);
-  const { pullDistance, threshold } = usePullToRefresh(
-    scrollRef,
-    () => dispatch(loadSchedule(selectedDate)),
-    true,
-  );
+  const { pullDistance, threshold } = usePullToRefresh(scrollRef, refetch, true);
 
   return (
     <div className="flex flex-col h-full">
-      <DateNavigator />
+      <DateNavigator prevDate={prevDate} nextDate={nextDate} />
       <div ref={scrollRef} className="flex-1 overflow-y-auto">
         {pullDistance > 0 && (
           <div className="flex justify-center py-2" style={{ opacity: pullDistance / threshold }}>
@@ -43,14 +37,14 @@ export function ScheduleView() {
             </svg>
           </div>
         )}
-        {status === 'loading' && games.length === 0 && <LoadingSpinner />}
-        {status === 'failed' && (
+        {isLoading && games.length === 0 && <LoadingSpinner />}
+        {isError && (
           <ErrorMessage
-            message={error ?? 'Failed to load schedule'}
-            onRetry={() => dispatch(loadSchedule(selectedDate))}
+            message={error instanceof Error ? error.message : 'Failed to load schedule'}
+            onRetry={refetch}
           />
         )}
-        {(status === 'succeeded' || games.length > 0) && <GameList games={games} />}
+        {(!isLoading || games.length > 0) && !isError && <GameList games={games} />}
       </div>
     </div>
   );

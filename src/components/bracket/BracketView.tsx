@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useBracket } from '../../hooks/useBracket';
+import { useBracketQuery } from '../../hooks/useBracketQuery';
 import { SeriesCard } from './SeriesCard';
 import { BracketOverlay } from './BracketOverlay';
 import { LoadingSpinner } from '../common/LoadingSpinner';
@@ -16,7 +16,7 @@ const ROUND_LABELS: Record<string, string> = {
 };
 
 export function BracketView() {
-  const { data, status, error } = useBracket();
+  const { data, isLoading, isError, error } = useBracketQuery();
   const [showTree, setShowTree] = useState(false);
   const [useMock, setUseMock] = useState(false);
 
@@ -40,7 +40,7 @@ export function BracketView() {
                 Preview
               </button>
             )}
-            {status === 'succeeded' && data && (
+            {!isLoading && !isError && data && (
               <button
                 onClick={() => {
                   setUseMock(false);
@@ -54,9 +54,13 @@ export function BracketView() {
           </div>
         </div>
         <div className="flex-1 overflow-y-auto">
-          {status === 'loading' && <LoadingSpinner />}
-          {status === 'failed' && <ErrorMessage message={error ?? 'Failed to load bracket'} />}
-          {status === 'succeeded' && data && renderBracket(data.series)}
+          {isLoading && <LoadingSpinner />}
+          {isError && (
+            <ErrorMessage
+              message={error instanceof Error ? error.message : 'Failed to load bracket'}
+            />
+          )}
+          {!isLoading && !isError && data && renderBracket(data.series)}
         </div>
       </div>
 
