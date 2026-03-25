@@ -1,4 +1,5 @@
-import { useAppSelector } from '../../store/hooks';
+import { useAtomValue } from 'jotai';
+import { standingsGroupingAtom } from '../../store/atoms';
 import { useStandingsQuery } from '../../hooks/useStandingsQuery';
 import { StandingsToggle } from './StandingsToggle';
 import { StandingsTable } from './StandingsTable';
@@ -8,7 +9,7 @@ import type { TeamStanding } from '../../types/standings';
 
 export function StandingsView() {
   const { standings, isLoading, isError, error } = useStandingsQuery();
-  const grouping = useAppSelector((s) => s.ui.standingsGrouping);
+  const grouping = useAtomValue(standingsGroupingAtom);
 
   return (
     <div className="flex flex-col h-full">

@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useAtomValue, useSetAtom } from 'jotai';
 import { playGoalHorn } from '../../utils/goalHorn';
 import type { NormalizedGame } from '../../types/schedule';
 import { TeamLogo } from '../common/TeamLogo';
@@ -6,17 +7,17 @@ import { GameStatusBadge } from './GameStatusBadge';
 import { isLive, isFinal } from '../../utils/gameUtils';
 import { getTeamColor } from '../../utils/teamUtils';
 import { useFavoriteTeams } from '../../hooks/useFavoriteTeam';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { setSelectedGame, setActiveView } from '../../store/slices/uiSlice';
+import { selectedGameIdAtom, activeViewAtom, hornMutedAtom } from '../../store/atoms';
 
 interface Props {
   game: NormalizedGame;
 }
 
 export function GameCard({ game }: Props) {
-  const dispatch = useAppDispatch();
-  const selectedGameId = useAppSelector((s) => s.ui.selectedGameId);
-  const hornMuted = useAppSelector((s) => s.ui.hornMuted);
+  const selectedGameId = useAtomValue(selectedGameIdAtom);
+  const hornMuted = useAtomValue(hornMutedAtom);
+  const setSelectedGameId = useSetAtom(selectedGameIdAtom);
+  const setActiveView = useSetAtom(activeViewAtom);
   const { isFavorite } = useFavoriteTeams();
 
   const isSelected = selectedGameId === game.id;
@@ -27,8 +28,8 @@ export function GameCard({ game }: Props) {
   const hasFavorite = awayFav || homeFav;
 
   const handleClick = () => {
-    dispatch(setSelectedGame(game.id));
-    dispatch(setActiveView('gameDetail'));
+    setSelectedGameId(game.id);
+    setActiveView('gameDetail');
   };
 
   const favoriteColor = hasFavorite

@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { useAppSelector } from '../../store/hooks';
+import { useAtomValue } from 'jotai';
+import { selectedGameIdAtom } from '../../store/atoms';
 import { useGameDetailQuery } from '../../hooks/useGameDetailQuery';
 import { GameHeader } from './GameHeader';
 import { BoxScore } from './BoxScore';
@@ -17,7 +18,7 @@ interface Props {
 
 export function GameDetailView({ onClose }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('scoring');
-  const gameId = useAppSelector((s) => s.ui.selectedGameId);
+  const gameId = useAtomValue(selectedGameIdAtom);
   const { boxScore, plays, scoringPlays, players, playerStats, boxScoreStatus, playsStatus } =
     useGameDetailQuery(gameId);
 

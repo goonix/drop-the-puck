@@ -1,5 +1,5 @@
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { setSelectedDate, setSelectedGame } from '../../store/slices/uiSlice';
+import { useAtom, useSetAtom } from 'jotai';
+import { selectedDateAtom, selectedGameIdAtom } from '../../store/atoms';
 import { prevDate, nextDate, formatDisplayDate, todayString } from '../../utils/dateUtils';
 
 interface Props {
@@ -8,12 +8,12 @@ interface Props {
 }
 
 export function DateNavigator({ prevDate: prevD, nextDate: nextD }: Props) {
-  const dispatch = useAppDispatch();
-  const selectedDate = useAppSelector((s) => s.ui.selectedDate);
+  const [selectedDate, setSelectedDate] = useAtom(selectedDateAtom);
+  const setSelectedGameId = useSetAtom(selectedGameIdAtom);
 
   const navigate = (date: string) => {
-    dispatch(setSelectedDate(date));
-    dispatch(setSelectedGame(null));
+    setSelectedDate(date);
+    setSelectedGameId(null);
     // Update URL
     const url = new URL(window.location.href);
     url.searchParams.set('date', date);

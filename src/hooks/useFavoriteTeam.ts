@@ -1,13 +1,23 @@
-import { useAppDispatch, useAppSelector } from '../store/hooks';
-import { toggleFavoriteTeam, setFavoriteTeams } from '../store/slices/uiSlice';
+import { useAtom } from 'jotai';
+import { favoriteTeamAbbrevsAtom } from '../store/atoms';
 
 export function useFavoriteTeams() {
-  const dispatch = useAppDispatch();
-  const favoriteTeamAbbrevs = useAppSelector((s) => s.ui.favoriteTeamAbbrevs);
+  const [favoriteTeamAbbrevs, setFavoriteTeamAbbrevs] = useAtom(favoriteTeamAbbrevsAtom);
 
   const isFavorite = (abbrev: string) => favoriteTeamAbbrevs.includes(abbrev);
-  const toggle = (abbrev: string) => dispatch(toggleFavoriteTeam(abbrev));
-  const setAll = (abbrevs: string[]) => dispatch(setFavoriteTeams(abbrevs));
+
+  const toggle = (abbrev: string) => {
+    setFavoriteTeamAbbrevs((prev) => {
+      const idx = prev.indexOf(abbrev);
+      if (idx >= 0) {
+        return prev.filter((_, i) => i !== idx);
+      } else {
+        return [...prev, abbrev];
+      }
+    });
+  };
+
+  const setAll = (abbrevs: string[]) => setFavoriteTeamAbbrevs(abbrevs);
 
   return { favoriteTeamAbbrevs, isFavorite, toggle, setAll };
 }

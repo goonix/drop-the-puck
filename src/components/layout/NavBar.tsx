@@ -1,5 +1,5 @@
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { setActiveView } from '../../store/slices/uiSlice';
+import { useAtom } from 'jotai';
+import { activeViewAtom } from '../../store/atoms';
 
 type View = 'schedule' | 'standings' | 'bracket';
 
@@ -10,15 +10,14 @@ const TABS: { id: View; label: string }[] = [
 ];
 
 export function NavBar() {
-  const dispatch = useAppDispatch();
-  const activeView = useAppSelector((s) => s.ui.activeView);
+  const [activeView, setActiveView] = useAtom(activeViewAtom);
 
   return (
     <nav className="hidden md:flex border-b border-gray-200 dark:border-gray-700/50 shrink-0">
       {TABS.map((tab) => (
         <button
           key={tab.id}
-          onClick={() => dispatch(setActiveView(tab.id))}
+          onClick={() => setActiveView(tab.id)}
           className={`px-5 py-3 text-sm font-medium border-b-2 transition-colors ${
             activeView === tab.id || (activeView === 'gameDetail' && tab.id === 'schedule')
               ? 'border-blue-500 text-blue-600 dark:text-blue-400'

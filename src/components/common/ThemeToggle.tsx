@@ -1,13 +1,12 @@
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { toggleTheme } from '../../store/slices/uiSlice';
+import { useAtom } from 'jotai';
+import { themeAtom } from '../../store/atoms';
 
 export function ThemeToggle() {
-  const dispatch = useAppDispatch();
-  const theme = useAppSelector((s) => s.ui.theme);
+  const [theme, setTheme] = useAtom(themeAtom);
 
   return (
     <button
-      onClick={() => dispatch(toggleTheme())}
+      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
       className="p-2 rounded-lg text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
       aria-label="Toggle theme"
       title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}

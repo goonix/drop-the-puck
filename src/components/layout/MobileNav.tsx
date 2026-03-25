@@ -1,9 +1,8 @@
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { setActiveView } from '../../store/slices/uiSlice';
+import { useAtom } from 'jotai';
+import { activeViewAtom } from '../../store/atoms';
 
 export function MobileNav() {
-  const dispatch = useAppDispatch();
-  const activeView = useAppSelector((s) => s.ui.activeView);
+  const [activeView, setActiveView] = useAtom(activeViewAtom);
 
   return (
     <nav className="md:hidden fixed bottom-0 inset-x-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700/50 flex z-40 safe-area-pb">
@@ -12,20 +11,20 @@ export function MobileNav() {
         label="Schedule"
         active={activeView === 'schedule' || activeView === 'gameDetail'}
         onClick={() => {
-          dispatch(setActiveView('schedule'));
+          setActiveView('schedule');
         }}
       />
       <NavItem
         icon="📊"
         label="Standings"
         active={activeView === 'standings'}
-        onClick={() => dispatch(setActiveView('standings'))}
+        onClick={() => setActiveView('standings')}
       />
       <NavItem
         icon="🏆"
         label="Bracket"
         active={activeView === 'bracket'}
-        onClick={() => dispatch(setActiveView('bracket'))}
+        onClick={() => setActiveView('bracket')}
       />
     </nav>
   );

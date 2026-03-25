@@ -1,15 +1,14 @@
 import { useState } from 'react';
+import { useAtom } from 'jotai';
 import { ThemeToggle } from '../common/ThemeToggle';
 import { FavoriteTeamPicker } from '../common/FavoriteTeamPicker';
 import { useFavoriteTeams } from '../../hooks/useFavoriteTeam';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { toggleHornMuted } from '../../store/slices/uiSlice';
+import { hornMutedAtom } from '../../store/atoms';
 
 export function Header() {
   const [showPicker, setShowPicker] = useState(false);
   const { favoriteTeamAbbrevs } = useFavoriteTeams();
-  const dispatch = useAppDispatch();
-  const hornMuted = useAppSelector((s) => s.ui.hornMuted);
+  const [hornMuted, setHornMuted] = useAtom(hornMutedAtom);
 
   return (
     <>
@@ -32,7 +31,7 @@ export function Header() {
             )}
           </button>
           <button
-            onClick={() => dispatch(toggleHornMuted())}
+            onClick={() => setHornMuted(!hornMuted)}
             className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
             title={hornMuted ? 'Unmute goal horn' : 'Mute goal horn'}
           >

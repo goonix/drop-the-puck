@@ -1,5 +1,6 @@
 import { useRef } from 'react';
-import { useAppSelector } from '../../store/hooks';
+import { useAtomValue } from 'jotai';
+import { selectedDateAtom } from '../../store/atoms';
 import { useScheduleQuery } from '../../hooks/useScheduleQuery';
 import { DateNavigator } from './DateNavigator';
 import { GameList } from './GameList';
@@ -8,7 +9,7 @@ import { ErrorMessage } from '../common/ErrorMessage';
 import { usePullToRefresh } from '../../hooks/usePullToRefresh';
 
 export function ScheduleView() {
-  const selectedDate = useAppSelector((s) => s.ui.selectedDate);
+  const selectedDate = useAtomValue(selectedDateAtom);
   const { games, prevDate, nextDate, isLoading, isError, error, refetch } =
     useScheduleQuery(selectedDate);
   const scrollRef = useRef<HTMLDivElement>(null);

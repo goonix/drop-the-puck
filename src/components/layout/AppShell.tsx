@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
-import { useAppDispatch, useAppSelector } from '../../store/hooks';
-import { setActiveView, setSelectedDate } from '../../store/slices/uiSlice';
+import { useAtom, useAtomValue, useSetAtom } from 'jotai';
+import { activeViewAtom, selectedGameIdAtom, themeAtom, selectedDateAtom } from '../../store/atoms';
 
 import { Header } from './Header';
 import { NavBar } from './NavBar';
@@ -11,18 +11,14 @@ import { GameDetailView } from '../gameDetail/GameDetailView';
 import { BracketView } from '../bracket/BracketView';
 
 export function AppShell() {
-  const dispatch = useAppDispatch();
-  const activeView = useAppSelector((s) => s.ui.activeView);
-  const selectedGameId = useAppSelector((s) => s.ui.selectedGameId);
-  const theme = useAppSelector((s) => s.ui.theme);
+  const [activeView, setActiveView] = useAtom(activeViewAtom);
+  const selectedGameId = useAtomValue(selectedGameIdAtom);
+  const theme = useAtomValue(themeAtom);
+  const setSelectedDate = useSetAtom(selectedDateAtom);
 
   // Sync theme to document
   useEffect(() => {
-    if (theme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
 
   // Sync date from URL on mount
@@ -30,9 +26,9 @@ export function AppShell() {
     const params = new URLSearchParams(window.location.search);
     const date = params.get('date');
     if (date && /^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      dispatch(setSelectedDate(date));
+      setSelectedDate(date);
     }
-  }, [dispatch]);
+  }, [setSelectedDate]);
 
   const showGameDetail =
     activeView === 'gameDetail' || (activeView === 'schedule' && selectedGameId !== null);
@@ -67,7 +63,7 @@ export function AppShell() {
             onClose={
               activeView === 'gameDetail'
                 ? () => {
-                    dispatch(setActiveView('schedule'));
+                    setActiveView('schedule');
                   }
                 : undefined
             }
@@ -80,7 +76,7 @@ export function AppShell() {
         <div className="md:hidden fixed inset-0 z-30 bg-gray-950 flex flex-col pt-14">
           <GameDetailView
             onClose={() => {
-              dispatch(setActiveView('schedule'));
+              setActiveView('schedule');
             }}
           />
         </div>
