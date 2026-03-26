@@ -1,0 +1,52 @@
+{
+  "series": [
+    {
+      "seriesLetter": "A",
+      "seriesTitle": "Eastern First Round - Series A",
+      "seriesAbbrev": "ECF-A",
+      "playoffRound": 1,
+      "topSeedRank": 1,
+      "topSeedRankAbbrev": "E1",
+      "topSeedWins": 3,
+      "bottomSeedRank": 8,
+      "bottomSeedRankAbbrev": "E8",
+      "bottomSeedWins": 1,
+      "topSeedTeam": {
+        "id": 6,
+        "abbrev": "BOS",
+        "name": { "default": "Boston Bruins" },
+        "logo": "https://assets.nhle.com/logos/nhl/svg/BOS_light.svg"
+      },
+      "bottomSeedTeam": {
+        "id": 10,
+        "abbrev": "TOR",
+        "name": { "default": "Toronto Maple Leafs" },
+        "logo": "https://assets.nhle.com/logos/nhl/svg/TOR_light.svg"
+      }
+    },
+    {
+      "seriesLetter": "E",
+      "seriesTitle": "Western First Round - Series E",
+      "seriesAbbrev": "WCF-E",
+      "playoffRound": 1,
+      "topSeedRank": 1,
+      "topSeedRankAbbrev": "W1",
+      "topSeedWins": 2,
+      "bottomSeedRank": 8,
+      "bottomSeedRankAbbrev": "W8",
+      "bottomSeedWins": 2,
+      "topSeedTeam": {
+        "id": 22,
+        "abbrev": "EDM",
+        "name": { "default": "Edmonton Oilers" },
+        "logo": "https://assets.nhle.com/logos/nhl/svg/EDM_light.svg"
+      },
+      "bottomSeedTeam": {
+        "id": 21,
+        "abbrev": "COL",
+        "name": { "default": "Colorado Avalanche" },
+        "logo": "https://assets.nhle.com/logos/nhl/svg/COL_light.svg"
+      }
+    }
+  ]
+}
