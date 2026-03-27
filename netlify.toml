@@ -2,12 +2,8 @@
   command = "npm run build"
   publish = "dist"
 
-# Proxy NHL API — keeps CORS out of the browser and matches the Vite dev proxy
-[[redirects]]
-  from = "/api/nhl/*"
-  to = "https://api-web.nhle.com/:splat"
-  status = 200
-  force = true
+# NHL API proxy handled by netlify/edge-functions/nhl-proxy.ts
+# (follows redirects server-side, avoiding CORS from NHL's /standings/now → /standings/date redirect)
 
 # SPA fallback — all client-side routes serve index.html
 [[redirects]]
