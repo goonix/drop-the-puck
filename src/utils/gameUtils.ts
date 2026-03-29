@@ -53,6 +53,7 @@ export function normalizeGame(raw: NHLScoreGame): NormalizedGame {
     homeSog: raw.homeTeam.sog ?? 0,
     venue: raw.venue?.default ?? '',
     gameOutcome: raw.gameOutcome?.lastPeriodType ?? null,
+    threeMinRecap: raw.threeMinRecap,
     tvBroadcasts: (raw.tvBroadcasts ?? []).map((b) => ({
       network: b.network,
       market: b.market,
@@ -66,6 +67,7 @@ export function normalizeGame(raw: NHLScoreGame): NormalizedGame {
       teamAbbrev: g.teamAbbrev?.default ?? '',
       assists: g.assists?.map((a) => a.name?.default ?? '') ?? [],
       goalModifier: g.goalModifier ?? '',
+      highlightClipSharingUrl: g.highlightClipSharingUrl,
     })),
   };
 }

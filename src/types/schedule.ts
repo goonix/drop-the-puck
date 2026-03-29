@@ -20,6 +20,7 @@ export interface NormalizedGame {
   homeSog: number;
   venue: string;
   gameOutcome: string | null;
+  threeMinRecap?: string;
   goals: NormalizedGoal[];
   tvBroadcasts: { network: string; market: string; countryCode: string }[];
 }
@@ -32,4 +33,5 @@ export interface NormalizedGoal {
   teamAbbrev: string;
   assists: string[];
   goalModifier: string;
+  highlightClipSharingUrl?: string;
 }
