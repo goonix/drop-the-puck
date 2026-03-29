@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAtomValue } from 'jotai';
-import { selectedGameIdAtom } from '../../store/atoms';
+import { useQueryClient } from '@tanstack/react-query';
+import { selectedGameIdAtom, selectedDateAtom } from '../../store/atoms';
 import { useGameDetailQuery } from '../../hooks/useGameDetailQuery';
 import { GameHeader } from './GameHeader';
 import { BoxScore } from './BoxScore';
@@ -9,6 +10,7 @@ import { PlayByPlay } from './PlayByPlay';
 import { PlayerStats } from './PlayerStats';
 import { LoadingSpinner } from '../common/LoadingSpinner';
 import { ErrorMessage } from '../common/ErrorMessage';
+import type { NormalizedGame } from '../../types/schedule';
 
 type Tab = 'scoring' | 'boxscore' | 'plays' | 'stats';
 
@@ -19,8 +21,23 @@ interface Props {
 export function GameDetailView({ onClose }: Props) {
   const [activeTab, setActiveTab] = useState<Tab>('scoring');
   const gameId = useAtomValue(selectedGameIdAtom);
+  const selectedDate = useAtomValue(selectedDateAtom);
+  const queryClient = useQueryClient();
   const { boxScore, plays, scoringPlays, players, playerStats, boxScoreStatus, playsStatus } =
     useGameDetailQuery(gameId);
+
+  const scheduleData = queryClient.getQueryData<{ games: NormalizedGame[] }>([
+    'schedule',
+    selectedDate,
+  ]);
+  const normalizedGame = scheduleData?.games.find((g) => g.id === gameId) ?? null;
+
+  const goalHighlightUrls = new Map<string, string>();
+  for (const goal of normalizedGame?.goals ?? []) {
+    if (goal.highlightClipSharingUrl) {
+      goalHighlightUrls.set(`${goal.period}-${goal.timeInPeriod}`, goal.highlightClipSharingUrl);
+    }
+  }
 
   if (!gameId) {
     return (
@@ -62,6 +79,23 @@ export function GameDetailView({ onClose }: Props) {
         <>
           <GameHeader boxScore={boxScore} />
 
+          {/* Recap link */}
+          {normalizedGame?.threeMinRecap && (
+            <div className="px-4 py-2 border-b border-gray-200 dark:border-gray-700/50">
+              <a
+                href={normalizedGame.threeMinRecap}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline"
+              >
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M6.3 2.84A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.891a1.5 1.5 0 000-2.538L6.3 2.84z" />
+                </svg>
+                Watch Recap
+              </a>
+            </div>
+          )}
+
           {/* Tabs */}
           <div className="flex border-b border-gray-200 dark:border-gray-700/50">
             {(
@@ -93,6 +127,7 @@ export function GameDetailView({ onClose }: Props) {
                 scoringPlays={scoringPlays}
                 awayAbbrev={boxScore.awayTeamAbbrev}
                 homeAbbrev={boxScore.homeTeamAbbrev}
+                goalHighlightUrls={goalHighlightUrls}
               />
             )}
             {activeTab === 'boxscore' && <BoxScore boxScore={boxScore} />}

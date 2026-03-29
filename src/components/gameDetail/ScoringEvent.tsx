@@ -5,6 +5,7 @@ interface Props {
   play: ScoringPlay;
   awayAbbrev: string;
   homeAbbrev?: string;
+  highlightUrl?: string;
 }
 
 function periodLabel(periodType: string, period: number): string {
@@ -13,7 +14,7 @@ function periodLabel(periodType: string, period: number): string {
   return `P${period}`;
 }
 
-export function ScoringEvent({ play, awayAbbrev }: Props) {
+export function ScoringEvent({ play, awayAbbrev, highlightUrl }: Props) {
   const isAway = play.teamAbbrev === awayAbbrev;
   const assists = [
     play.assist1Name
@@ -67,10 +68,24 @@ export function ScoringEvent({ play, awayAbbrev }: Props) {
         )}
       </div>
 
-      {/* Time */}
+      {/* Time + highlight */}
       <div className="text-xs text-gray-500 text-right whitespace-nowrap">
         <div>{periodLabel(play.periodType, play.period)}</div>
         <div>{play.timeInPeriod}</div>
+        {highlightUrl && (
+          <a
+            href={highlightUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-0.5 mt-0.5 text-blue-500 hover:text-blue-400"
+            aria-label="Watch highlight"
+          >
+            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M6.3 2.84A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.27l9.344-5.891a1.5 1.5 0 000-2.538L6.3 2.84z" />
+            </svg>
+            Clip
+          </a>
+        )}
       </div>
     </div>
   );

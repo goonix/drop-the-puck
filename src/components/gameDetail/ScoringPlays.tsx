@@ -5,9 +5,10 @@ interface Props {
   scoringPlays: ScoringPlay[];
   awayAbbrev: string;
   homeAbbrev: string;
+  goalHighlightUrls?: Map<string, string>;
 }
 
-export function ScoringPlays({ scoringPlays, awayAbbrev, homeAbbrev }: Props) {
+export function ScoringPlays({ scoringPlays, awayAbbrev, homeAbbrev, goalHighlightUrls }: Props) {
   if (scoringPlays.length === 0) {
     return <div className="py-8 text-center text-gray-500 text-sm">No goals yet</div>;
   }
@@ -21,6 +22,7 @@ export function ScoringPlays({ scoringPlays, awayAbbrev, homeAbbrev }: Props) {
           play={play}
           awayAbbrev={awayAbbrev}
           homeAbbrev={homeAbbrev}
+          highlightUrl={goalHighlightUrls?.get(`${play.period}-${play.timeInPeriod}`)}
         />
       ))}
     </div>
