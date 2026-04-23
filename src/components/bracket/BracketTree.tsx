@@ -8,20 +8,23 @@ const COL_W = 160; // width of a series card column
 const GAP_W = 36; // width of a connector SVG column
 const STROKE = '#6b7280';
 
-function detectConf(s: PlayoffSeries): 'E' | 'W' | null {
-  const t = s.seriesTitle.toLowerCase();
-  if (t.includes('eastern')) return 'E';
-  if (t.includes('western')) return 'W';
-  return null;
-}
-
 function sortedBy(arr: PlayoffSeries[]) {
   return [...arr].sort((a, b) => a.seriesLetter.localeCompare(b.seriesLetter));
 }
 
+// NHL assigns Eastern series letters before Western ones within each round (e.g. A-D East, E-H West).
+// Splitting sorted letters in half is more reliable than parsing seriesTitle, which the API no longer
+// includes conference names in (returns "1st Round" rather than "Eastern First Round").
+function detectConf(s: PlayoffSeries, allSeries: PlayoffSeries[]): 'E' | 'W' | null {
+  if (s.seriesAbbrev === 'SCF') return null;
+  const roundSeries = sortedBy(allSeries.filter((x) => x.seriesAbbrev === s.seriesAbbrev));
+  const idx = roundSeries.findIndex((x) => x.seriesLetter === s.seriesLetter);
+  return idx < roundSeries.length / 2 ? 'E' : 'W';
+}
+
 function structureBracket(series: PlayoffSeries[]) {
   const by = (round: string, conf: 'E' | 'W' | null) =>
-    sortedBy(series.filter((s) => s.seriesAbbrev === round && detectConf(s) === conf));
+    sortedBy(series.filter((s) => s.seriesAbbrev === round && detectConf(s, series) === conf));
   return {
     westR1: by('R1', 'W'),
     westR2: by('R2', 'W'),
